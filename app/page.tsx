@@ -1,6 +1,7 @@
 import ThemeToggle from "@/components/ThemeToggle";
 import TextStatesSwapCard from "@/components/animations/TextStatesSwapCard";
 import ProgressBarCard from "@/components/animations/ProgressBarCard";
+import ButtonPressCard from "@/components/animations/ButtonPressCard";
 
 export default function Home() {
   return (
@@ -39,6 +40,7 @@ export default function Home() {
       <main className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <TextStatesSwapCard />
         <ProgressBarCard />
+        <ButtonPressCard />
       </main>
 
       {/* Footer */}

@@ -9,8 +9,25 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Velocity",
-  description: "A personal collection of animations to learn and build on",
+  title: "tweens.dev",
+  description: "A collection of web animations built with React and plain CSS. Copy and drop into any project.",
+  metadataBase: new URL("https://tweens.dev"),
+  alternates: {
+    canonical: "https://tweens.dev",
+  },
+  openGraph: {
+    title: "tweens.dev",
+    description: "A collection of web animations built with React and plain CSS. Copy and drop into any project.",
+    url: "https://tweens.dev",
+    siteName: "tweens.dev",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "tweens.dev",
+    description: "A collection of web animations built with React and plain CSS. Copy and drop into any project.",
+    creator: "@rcuffdev",
+  },
 };
 
 export default function RootLayout({

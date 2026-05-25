@@ -108,8 +108,20 @@ export default function CodeModal({
         </div>
 
         <div className={styles.codeWrap}>
-          <button className={styles.copyButton} onClick={handleCopy}>
-            {copied ? "Copied!" : "Copy"}
+          <button
+            className={`${styles.copyButton} ${copied ? styles.copyButtonCopied : ""}`}
+            onClick={handleCopy}
+          >
+            {copied ? (
+              <>
+                <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true">
+                  <path d="M1.5 5.5l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Copied!
+              </>
+            ) : (
+              "Copy"
+            )}
           </button>
           <pre className={styles.pre}>
             <code>{code}</code>

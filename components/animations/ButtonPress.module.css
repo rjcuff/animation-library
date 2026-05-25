@@ -3,7 +3,6 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
   padding: 10px 20px;
   border-radius: 10px;
   border: none;
@@ -58,8 +57,3 @@
   }
 }
 
-.icon {
-  width: 15px;
-  height: 15px;
-  flex-shrink: 0;
-}

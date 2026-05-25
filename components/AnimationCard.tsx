@@ -34,11 +34,8 @@ export default function AnimationCard({
         }`}
         onClick={() => hasCode && setIsModalOpen(true)}
       >
-        {/* Inner demo — stop propagation so the interactive element still works */}
-        <div
-          className="flex-1 flex flex-col items-center justify-center rounded-xl bg-neutral-50 dark:bg-white/[0.03] border border-neutral-100 dark:border-white/[0.05] overflow-hidden"
-          onClick={(e) => e.stopPropagation()}
-        >
+        {/* Inner demo */}
+        <div className="flex-1 flex flex-col items-center justify-center rounded-xl bg-neutral-50 dark:bg-white/[0.03] border border-neutral-100 dark:border-white/[0.05] overflow-hidden">
           <div className="flex-1 flex items-center justify-center">
             {children}
           </div>
@@ -56,20 +53,13 @@ export default function AnimationCard({
         </div>
 
         {/* Title + description */}
-        <div className="mt-4 flex items-start justify-between gap-3">
-          <div>
-            <h3 className="text-sm font-medium text-neutral-900 dark:text-white">
-              {title}
-            </h3>
-            <p className="text-xs text-neutral-500 dark:text-white/50 mt-0.5">
-              {description}
-            </p>
-          </div>
-          {hasCode && (
-            <span className="shrink-0 mt-0.5 text-[11px] font-mono text-neutral-300 dark:text-white/20 transition-colors">
-              {"</>"}
-            </span>
-          )}
+        <div className="mt-4">
+          <h3 className="text-sm font-medium text-neutral-900 dark:text-white">
+            {title}
+          </h3>
+          <p className="text-xs text-neutral-500 dark:text-white/50 mt-0.5">
+            {description}
+          </p>
         </div>
       </div>
 

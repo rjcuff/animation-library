@@ -1,6 +1,7 @@
 import NavActions from "@/components/NavActions";
 import ButtonPressCard from "@/components/animations/ButtonPressCard";
 import HoverLiftCard from "@/components/animations/HoverLiftCard";
+import IconSwapCard from "@/components/animations/IconSwapCard";
 
 export default function Home() {
   return (
@@ -36,6 +37,7 @@ export default function Home() {
       <main className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <ButtonPressCard />
         <HoverLiftCard />
+        <IconSwapCard />
       </main>
 
       <footer className="max-w-5xl mx-auto mt-32 text-center space-y-4">

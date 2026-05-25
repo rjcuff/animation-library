@@ -1,59 +1,40 @@
 .button {
-  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 20px;
-  border-radius: 10px;
-  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid transparent;
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
   font-family: inherit;
   color: #fff;
   background-color: #171717;
-  will-change: transform;
-
-  /* Hover: color only → use `ease`. Fast (150ms) because it's a simple state change. */
-  transition:
-    background-color 150ms ease,
-    transform 100ms ease;
+  transition: background-color 150ms ease, transform 100ms ease-out;
 }
 
-/* Hover only fires on real pointer devices — prevents sticky hover on touch */
+:global(.dark) .button {
+  background-color: #fff;
+  color: #171717;
+}
+
 @media (hover: hover) and (pointer: fine) {
   .button:hover {
     background-color: #2e2e2e;
   }
+
+  :global(.dark) .button:hover {
+    background-color: #e5e5e5;
+  }
 }
 
-/*
-  Press: scale down slightly so it feels like a physical button being pushed.
-  0.97 is subtle enough to not look weird, strong enough to feel real.
-  100ms is fast — this is micro-interaction territory.
-*/
 .button:active {
   transform: scale(0.97);
 }
 
-/* Respect the user's motion preference — disable all transitions */
 @media (prefers-reduced-motion: reduce) {
   .button {
     transition: none;
   }
 }
-
-/* Dark mode variant */
-@media (prefers-color-scheme: dark) {
-  .button {
-    background-color: #f5f5f5;
-    color: #171717;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .button:hover {
-      background-color: #e0e0e0;
-    }
-  }
-}
-

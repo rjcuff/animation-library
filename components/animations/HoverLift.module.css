@@ -1,10 +1,8 @@
 .card {
-  /* Hit area — keep this stable, never animate this */
   cursor: pointer;
 }
 
 .inner {
-  /* This is what you animate */
   padding: 20px;
   border-radius: 12px;
   background: white;
@@ -12,7 +10,6 @@
   box-shadow: 0 1px 4px rgb(0 0 0 / 0.06);
   width: 160px;
   text-align: center;
-
   transition: transform 150ms ease, box-shadow 150ms ease;
 }
 
@@ -20,12 +17,6 @@
   font-size: 13px;
   font-weight: 600;
   color: #111;
-  margin: 0 0 4px;
-}
-
-.subtitle {
-  font-size: 12px;
-  color: rgb(0 0 0 / 0.4);
   margin: 0;
 }
 

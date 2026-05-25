@@ -76,7 +76,7 @@ export default function ToggleSwitchCard() {
   return (
     <AnimationCard
       title="Toggle switch"
-      description="Sliding pill with a bouncy cubic-bezier"
+      description="Sliding pill with a snappy ease-in-out transition"
       reactCode={reactCode}
       cssCode={cssCode}
     >

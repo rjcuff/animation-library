@@ -21,21 +21,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  
-transition: opacity 150ms ease-out, scale 150ms ease-out, filter 150ms ease-out;
+  transition: opacity 150ms ease-out, scale 150ms ease-out, filter 150ms ease-out;
 }
 
 .visible {
   opacity: 1;
-  scale : 1;
+  scale: 1;
   filter: blur(0px);
-  
 }
 
 .hidden {
   opacity: 0;
   scale: 0.3;
-  filter: blur(4px)
+  filter: blur(4px);
 }
 
 @media (prefers-reduced-motion: reduce) {

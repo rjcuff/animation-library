@@ -25,7 +25,7 @@ export default function Home() {
 
       <header className="max-w-5xl mx-auto text-center mb-16">
         <h1 className="text-3xl font-bold text-neutral-900 dark:text-white mb-2">
-          tweens.dev
+          tweens
         </h1>
         <p className="text-neutral-500 dark:text-white/50 max-w-md mx-auto">
           A personal collection of web animations built with React and plain CSS.

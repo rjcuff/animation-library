@@ -30,6 +30,7 @@ export default function Home() {
         </h1>
         <p className="text-neutral-500 dark:text-white/50 max-w-md mx-auto">
           Your personal collection of animations to learn from and build on.
+          Just copy right into your project.
           
         </p>
       </header>

@@ -2,6 +2,8 @@ import NavActions from "@/components/NavActions";
 import ButtonPressCard from "@/components/animations/ButtonPressCard";
 import HoverLiftCard from "@/components/animations/HoverLiftCard";
 import IconSwapCard from "@/components/animations/IconSwapCard";
+import ToggleSwitchCard from "@/components/animations/ToggleSwitchCard";
+import LikeButtonCard from "@/components/animations/LikeButtonCard";
 
 export default function Home() {
   return (
@@ -38,6 +40,8 @@ export default function Home() {
         <ButtonPressCard />
         <HoverLiftCard />
         <IconSwapCard />
+        <ToggleSwitchCard />
+        <LikeButtonCard />
       </main>
 
       <footer className="max-w-5xl mx-auto mt-32 text-center space-y-4">

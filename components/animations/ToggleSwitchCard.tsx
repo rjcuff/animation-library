@@ -45,7 +45,7 @@ const cssCode = `.track {
 }
 
 :global(.dark) .on {
-  background-color: #fff;
+  background-color: #c8c8c8;
 }
 
 .thumb {
@@ -55,10 +55,6 @@ const cssCode = `.track {
   background-color: #fff;
   box-shadow: 0 1px 3px rgb(0 0 0 / 0.2);
   transition: transform 150ms ease-in-out;
-}
-
-:global(.dark) .on .thumb {
-  background-color: #171717;
 }
 
 .thumbOn {

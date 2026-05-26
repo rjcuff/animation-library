@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Play } from "lucide-react";
 import CodeModal from "./CodeModal";
+import styles from "./AnimationCard.module.css";
 
 interface AnimationCardProps {
   title: string;
@@ -26,10 +27,9 @@ export default function AnimationCard({
 
   return (
     <>
-      <div className="rounded-2xl border border-neutral-200 dark:border-white/[0.08] bg-white dark:bg-[#1a1a1a] p-5 h-[360px] flex flex-col">
-        {/* Inner demo — stop propagation so clicking the demo never opens the modal */}
+      <div className={styles.card}>
         <div
-          className="flex-1 flex flex-col items-center justify-center rounded-xl bg-neutral-50 dark:bg-white/[0.03] border border-neutral-100 dark:border-white/[0.05] overflow-hidden"
+          className={styles.demo}
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex-1 flex items-center justify-center">
@@ -48,17 +48,15 @@ export default function AnimationCard({
           )}
         </div>
 
-        {/* Title + description — clicking this area opens the modal */}
         <div
-          className={`mt-4 ${hasCode ? "cursor-pointer" : ""}`}
+          className={`${styles.meta} ${hasCode ? styles.metaClickable : ""}`}
           onClick={() => hasCode && setIsModalOpen(true)}
         >
-          <h3 className="text-sm font-medium text-neutral-900 dark:text-white">
-            {title}
-          </h3>
-          <p className="text-xs text-neutral-500 dark:text-white/50 mt-0.5">
-            {description}
-          </p>
+          <h3 className={styles.title}>{title}</h3>
+          <p className={styles.description}>{description}</p>
+          {hasCode && (
+            <span className={styles.codeHint}>{"</>"} view code</span>
+          )}
         </div>
       </div>
 

@@ -29,7 +29,7 @@ export default function CodeModal({
     setTimeout(() => {
       setIsClosing(false);
       onClose();
-    }, 160);
+    }, 140);
   }, [onClose]);
 
   useEffect(() => {
@@ -72,6 +72,7 @@ export default function CodeModal({
         aria-modal="true"
         aria-labelledby="code-modal-title"
       >
+        {/* Header */}
         <div className={styles.header}>
           <h2 className={styles.title} id="code-modal-title">
             {title}
@@ -81,9 +82,9 @@ export default function CodeModal({
             onClick={handleClose}
             aria-label="Close"
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
               <path
-                d="M1 1l12 12M13 1L1 13"
+                d="M1 1l10 10M11 1L1 11"
                 stroke="currentColor"
                 strokeWidth="1.5"
                 strokeLinecap="round"
@@ -92,37 +93,48 @@ export default function CodeModal({
           </button>
         </div>
 
+        {/* Tab bar — tabs left, copy button right */}
         <div className={styles.tabs}>
-          <button
-            className={`${styles.tab} ${activeTab === "react" ? styles.tabActive : ""}`}
-            onClick={() => setActiveTab("react")}
-          >
-            React
-          </button>
-          <button
-            className={`${styles.tab} ${activeTab === "css" ? styles.tabActive : ""}`}
-            onClick={() => setActiveTab("css")}
-          >
-            CSS
-          </button>
-        </div>
+          <div className={styles.tabGroup}>
+            <button
+              className={`${styles.tab} ${activeTab === "react" ? styles.tabActive : ""}`}
+              onClick={() => setActiveTab("react")}
+            >
+              React
+            </button>
+            <button
+              className={`${styles.tab} ${activeTab === "css" ? styles.tabActive : ""}`}
+              onClick={() => setActiveTab("css")}
+            >
+              CSS
+            </button>
+          </div>
 
-        <div className={styles.codeWrap}>
           <button
             className={`${styles.copyButton} ${copied ? styles.copyButtonCopied : ""}`}
             onClick={handleCopy}
           >
             {copied ? (
               <>
-                <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true">
-                  <path d="M1.5 5.5l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                  <path
+                    d="M1.5 5l2.5 2.5 4.5-4.5"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                 </svg>
-                Copied!
+                Copied
               </>
             ) : (
               "Copy"
             )}
           </button>
+        </div>
+
+        {/* Code */}
+        <div className={styles.codeWrap}>
           <pre className={styles.pre}>
             <code>{code}</code>
           </pre>

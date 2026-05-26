@@ -13,6 +13,16 @@
   transition: transform 150ms ease, box-shadow 150ms ease;
 }
 
+
+:global(.dark) .inner { 
+  background: rgba(255, 255, 255, 0.05);
+ }
+
+:global(.dark) .title { 
+    color: #fff;
+ }
+
+
 .title {
   font-size: 13px;
   font-weight: 600;

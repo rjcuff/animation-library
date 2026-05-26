@@ -1,10 +1,10 @@
 import NavActions from "@/components/NavActions";
-import ButtonPressCard from "@/components/animations/ButtonPressCard";
-import HoverLiftCard from "@/components/animations/HoverLiftCard";
-import IconSwapCard from "@/components/animations/IconSwapCard";
-import ToggleSwitchCard from "@/components/animations/ToggleSwitchCard";
-import LikeButtonCard from "@/components/animations/LikeButtonCard";
-import ErrorShakeCard from "@/components/animations/ErrorShakeCard";
+import ButtonPressCard from "@/components/animations/ButtonPress/ButtonPressCard";
+import HoverLiftCard from "@/components/animations/HoverLift/HoverLiftCard";
+import IconSwapCard from "@/components/animations/IconSwap/IconSwapCard";
+import ToggleSwitchCard from "@/components/animations/ToggleSwitch/ToggleSwitchCard";
+import LikeButtonCard from "@/components/animations/LikeButton/LikeButtonCard";
+import ErrorShakeCard from "@/components/animations/ErrorShake/ErrorShakeCard";
 
 export default function Home() {
   return (

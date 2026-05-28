@@ -1,0 +1,91 @@
+---
+title: onVisible()
+description: Trigger animations when elements scroll into the viewport. Wraps IntersectionObserver.
+---
+
+Fires a callback when an element enters the viewport. Returns a cleanup function to disconnect the observer.
+
+```ts
+import { onVisible, enter } from '@tweens/tweens'
+
+// Animate in once — the most common pattern
+const cleanup = onVisible(el, (el) =>
+  enter(el, { y: 20, opacity: 0 }, 'snappy')
+)
+
+// Call cleanup() to disconnect (e.g. on component unmount)
+cleanup()
+```
+
+## In React
+
+```tsx
+import { useEffect, useRef } from 'react'
+import { onVisible, enter } from '@tweens/tweens'
+
+export function FadeInSection({ children }) {
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!ref.current) return
+    return onVisible(ref.current, (el) =>
+      enter(el, { y: 24, opacity: 0 }, 'gentle'),
+      { threshold: 0.15, once: true }
+    )
+  }, [])
+
+  return (
+    <div ref={ref} style={{ opacity: 0 }}>
+      {children}
+    </div>
+  )
+}
+```
+
+## Multiple elements
+
+```ts
+// NodeList
+const cleanup = onVisible(
+  document.querySelectorAll('.card'),
+  (el) => enter(el, { y: 16, opacity: 0 }, 'snappy'),
+  { threshold: 0.1 }
+)
+
+// Array of elements
+onVisible(
+  itemRefs.current,
+  (el) => enter(el, { scale: 0.95, opacity: 0 }, 'gentle')
+)
+```
+
+## Signature
+
+```ts
+onVisible(
+  target: HTMLElement | HTMLElement[] | NodeListOf<Element>,
+  callback: (el: HTMLElement) => void,
+  options?: {
+    threshold?: number    // 0–1 visibility ratio, default 0.1
+    once?: boolean        // disconnect after first fire, default true
+    rootMargin?: string   // IntersectionObserver rootMargin, default '0px'
+  },
+): () => void             // call to disconnect observer
+```
+
+## Options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `threshold` | `0.1` | How much of the element must be visible (0–1) |
+| `once` | `true` | Fire only once per element, then unobserve |
+| `rootMargin` | `'0px'` | Expand/shrink the detection zone |
+
+## Tip — set opacity: 0 upfront
+
+Elements that animate in via `enter()` or `spring()` should start hidden so they don't flash visible before the observer fires:
+
+```tsx
+// Set initial hidden state in your JSX/HTML
+<div ref={ref} style={{ opacity: 0 }}>
+```

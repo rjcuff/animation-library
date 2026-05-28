@@ -1,0 +1,76 @@
+---
+title: enter() / tween()
+description: Entrance helpers. enter() animates from a state back to natural position. tween() animates between two explicit states.
+---
+
+## enter()
+
+<ToastDemo />
+
+Snap the element to a "from" state, then spring it back to where it currently is. Perfect for entrances — you define where to come from, not where to go.
+
+```ts
+import { enter } from '@tweens/tweens'
+
+// Slide and fade in from below
+enter(el, { y: 24, opacity: 0 }, 'snappy')
+
+// Scale in from slightly small
+enter(el, { scale: 0.94, opacity: 0 }, 'gentle')
+
+// In React: call on mount
+useEffect(() => {
+  enter(ref.current!, { y: 16, opacity: 0 }, 'snappy')
+}, [])
+```
+
+### Signature
+
+```ts
+enter(
+  el: HTMLElement,
+  fromProps: AnimateProps,
+  options?: AnimateOptions | SpringPreset,
+): Promise<void>
+```
+
+## tween()
+
+`tween()` is the explicit version — you control both start and end states. Useful when you need to animate from a known position to a known position regardless of current state.
+
+```ts
+import { tween } from '@tweens/tweens'
+
+tween(el, { x: -200, opacity: 0 }, { x: 0, opacity: 1 }, 'gentle')
+tween(el, { scale: 0.8 }, { scale: 1 }, 'snappy')
+
+// Works with easing too
+tween(el, { opacity: 0 }, { opacity: 1 }, { duration: 0.3, ease: 'easeOut' })
+```
+
+### Signature
+
+```ts
+tween(
+  el: HTMLElement,
+  fromProps: AnimateProps,
+  toProps: AnimateProps,
+  options?: AnimateOptions | SpringPreset,
+): Promise<void>
+```
+
+## Magnetic follow
+
+<MagneticDemo />
+
+Use `spring()` inside mouse events to track cursor position — the spring config controls how closely the element follows.
+
+```ts
+const onMouseMove = (e) => {
+  const rect = el.getBoundingClientRect()
+  const dx = (e.clientX - rect.left - rect.width / 2) * 0.4
+  const dy = (e.clientY - rect.top - rect.height / 2) * 0.4
+  spring(el, { x: dx, y: dy }, 'snappy')
+}
+const onMouseLeave = () => spring(el, { x: 0, y: 0 }, 'gentle')
+```

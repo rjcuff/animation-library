@@ -1,0 +1,68 @@
+---
+title: cascade() / sequence()
+description: Orchestration helpers. cascade() staggers a list. sequence() runs animations one after another.
+---
+
+## cascade()
+
+<CascadeDemo />
+
+Animate a list of elements with a time offset between each. All animations run in parallel but start at staggered times.
+
+```ts
+import { cascade } from '@tweens/tweens'
+
+const items = document.querySelectorAll('.item')
+
+// Stagger in — 60ms between each element
+cascade(items, { y: 0, opacity: 1 }, 'snappy', 0.06)
+
+// In React with ref arrays
+cascade(itemRefs.current, { y: 0, opacity: 1 }, 'gentle', 0.08)
+```
+
+### Signature
+
+```ts
+cascade(
+  els: NodeListOf<Element> | HTMLElement[],
+  props: AnimateProps,
+  options?: AnimateOptions | SpringPreset,
+  interval?: number,    // seconds between each element, default 0.05
+): Promise<void>
+```
+
+## sequence()
+
+<SequenceDemo />
+
+Run an array of animation functions serially — each waits for the previous to settle before starting. Great for multi-step reveals, onboarding flows, or anything that needs strict ordering.
+
+```ts
+import { sequence, spring, enter } from '@tweens/tweens'
+
+await sequence([
+  () => enter(header, { y: 20, opacity: 0 }, 'snappy'),
+  () => enter(body, { y: 16, opacity: 0 }, 'gentle'),
+  () => cascade(items, { y: 0, opacity: 1 }, 'snappy', 0.06),
+])
+```
+
+### Signature
+
+```ts
+sequence(
+  steps: Array<() => Promise<void>>,
+): Promise<void>
+```
+
+### Combining cascade + sequence
+
+```ts
+// Animate in three sections, one after another
+await sequence([
+  () => spring(nav, { y: 0, opacity: 1 }, 'snappy'),
+  () => enter(hero, { scale: 0.96, opacity: 0 }, 'gentle'),
+  () => cascade(cards, { y: 0, opacity: 1 }, 'snappy', 0.06),
+])
+```

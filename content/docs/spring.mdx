@@ -1,0 +1,57 @@
+---
+title: spring()
+description: Spring physics shorthand. Wraps animate() with spring mode — the most common call in any tweens project.
+---
+
+<ButtonPressDemo />
+
+`spring()` is sugar for `animate()` in spring mode. Every spring resolves when the element physically settles — no fixed duration, no guessing.
+
+```ts
+import { spring } from '@tweens/tweens'
+
+spring(el, { scale: 1.04, y: -4 }, 'snappy')
+spring(el, { x: 0 }, { stiffness: 300, damping: 22 })
+spring(el, { opacity: 0 }, { duration: 0.4, bounce: 0.1 })
+```
+
+## Hover lift
+
+<HoverLiftDemo />
+
+The classic hover interaction. Springs carry velocity when interrupted, so hovering off mid-animation feels natural.
+
+```ts
+el.addEventListener('mouseenter', () => spring(el, { scale: 1.04, y: -6 }, 'snappy'))
+el.addEventListener('mouseleave', () => spring(el, { scale: 1, y: 0 }, 'gentle'))
+```
+
+## Interruptibility
+
+<InterruptDemo />
+
+Call `spring()` on an element that's already animating — it picks up the current position **and velocity**. No snapping, no popping.
+
+```ts
+// Click mid-animation — velocity carries through
+spring(el, { x: 80 }, 'bouncy')
+spring(el, { x: -80 }, 'bouncy') // continues from wherever it is
+```
+
+## Signature
+
+```ts
+spring(
+  el: HTMLElement,
+  props: SpringProps,
+  options?: SpringConfig | SpringPreset,
+): Promise<void>
+```
+
+## Relative values
+
+```ts
+spring(el, { x: '+=100' }) // move 100px right from current position
+spring(el, { x: '-=50'  }) // move 50px left
+spring(el, { scale: '+=0.05' })
+```

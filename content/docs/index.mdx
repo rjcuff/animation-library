@@ -1,0 +1,69 @@
+---
+title: Getting started
+description: Spring animations that feel alive. Zero dependencies, interruptible, Promise-based.
+---
+
+## Install
+
+```bash
+npm install @tweens/tweens
+```
+
+## Quick start
+
+```ts
+import { spring, animate, enter } from '@tweens/tweens'
+
+const el = document.getElementById('card')
+
+// Spring to a position
+await spring(el, { x: 100, scale: 1.05 }, 'bouncy')
+
+// Easing-based animation
+await animate(el, { opacity: 1 }, { duration: 0.3, ease: 'easeOut' })
+
+// Entrance animation — slide in from below
+enter(el, { y: 24, opacity: 0 }, 'snappy')
+```
+
+## In React
+
+All functions take DOM elements. Use `useRef` — never query selectors.
+
+```tsx
+'use client'
+import { useRef } from 'react'
+import { spring } from '@tweens/tweens'
+
+export function Card() {
+  const ref = useRef<HTMLDivElement>(null)
+
+  return (
+    <div
+      ref={ref}
+      onMouseEnter={() => spring(ref.current!, { scale: 1.04, y: -4 }, 'snappy')}
+      onMouseLeave={() => spring(ref.current!, { scale: 1, y: 0 }, 'snappy')}
+    />
+  )
+}
+```
+
+## What's in the box
+
+| Function | Description |
+|----------|-------------|
+| `animate()` | Unified engine — spring or easing mode |
+| `spring()` | Spring physics shorthand |
+| `enter()` | Animate from a state back to natural position |
+| `tween()` | Animate between two explicit states |
+| `snap()` | Instant set — no animation |
+| `stop()` | Cancel running animations |
+| `cascade()` | Staggered list animation |
+| `sequence()` | Run animations serially |
+| `onVisible()` | Trigger on scroll into viewport |
+
+All animation functions return `Promise<void>` — awaitable, chainable.
+
+## Accessibility
+
+`prefers-reduced-motion` is respected automatically. When enabled, all functions resolve immediately without animating.

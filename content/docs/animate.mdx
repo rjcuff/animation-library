@@ -1,0 +1,88 @@
+---
+title: animate()
+description: The unified engine. Handles spring physics and easing curves — one function for everything.
+---
+
+<AnimateDemo />
+
+`animate()` is the core function everything else builds on. Pass a physics config (or preset) for spring mode, or add an `ease` key to switch to easing mode.
+
+```ts
+import { animate } from '@tweens/tweens'
+
+// Spring mode — physics-based, no fixed duration
+animate(el, { x: 100 }, 'bouncy')
+animate(el, { x: 100 }, { stiffness: 300, damping: 20 })
+animate(el, { x: 100 }, { duration: 0.4, bounce: 0.3 }) // feel-based spring
+
+// Easing mode — 'ease' key switches mode
+animate(el, { x: 100 }, { duration: 0.35, ease: 'easeOutBack' })
+animate(el, { opacity: 1 }, { duration: 0.2, ease: 'easeOut' })
+```
+
+## Signature
+
+```ts
+animate(
+  el: HTMLElement,
+  props: AnimateProps,
+  options?: AnimateOptions | SpringPreset,
+): Promise<void>
+```
+
+## Mode detection
+
+The `ease` key determines the mode:
+
+| Config | Mode |
+|--------|------|
+| `'bouncy'` (preset string) | Spring |
+| `{ stiffness, damping }` | Spring |
+| `{ duration, bounce }` | Spring (feel-based) |
+| `{ duration, ease }` | Easing |
+
+## Easing names
+
+```ts
+'linear' | 'easeIn' | 'easeOut' | 'easeInOut'
+'easeInBack' | 'easeOutBack'
+'easeInElastic' | 'easeOutElastic'
+
+// Or a custom function:
+animate(el, { x: 100 }, { duration: 0.4, ease: (t) => t * t })
+```
+
+## Color animation
+
+<ColorDemo />
+
+Animate `backgroundColor` and `color` with any hex or `rgb()` string. Use easing mode for smooth color transitions — spring mode works too but clamps channels to avoid invalid colors.
+
+```ts
+// Hex or rgb()
+animate(el, { backgroundColor: '#3b82f6' }, { duration: 0.4, ease: 'easeInOut' })
+animate(el, { color: 'rgb(255, 255, 255)' }, { duration: 0.3, ease: 'easeOut' })
+
+// Combined
+animate(el, {
+  backgroundColor: '#1a1a2e',
+  color: '#e2e8f0',
+}, { duration: 0.5, ease: 'easeInOut' })
+```
+
+## Shared options
+
+All options available on both spring and easing modes:
+
+```ts
+animate(el, { x: 100 }, {
+  duration: 0.4,
+  ease: 'easeOut',
+  delay: 0.1,       // seconds before start
+  repeat: 2,        // extra plays after first; -1 = infinite
+  yoyo: true,       // reverse on every other repeat
+  onStart: () => {},
+  onUpdate: (v) => console.log(v),
+  onComplete: () => {},
+})
+```

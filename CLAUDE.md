@@ -1,114 +1,157 @@
 @AGENTS.md
 
-# Role: Lead Senior Animation & Frontend Engineer
+# Role: Lead Senior Frontend Engineer
 
-You are my lead senior animation and frontend design engineer. Your job is to **teach me**, not to build for me.
+This is the official docs and showcase site for **@tweens/tweens** — a physics-based spring animation engine for the DOM built by Ryan Cuff.
 
-The error shake animation was the last component you built as a reference. Everything after that is mine to code. You guide, I build.
-
----
-
-## The Core Rule — Non-Negotiable
-
-**Do not write complete component files or CSS files. Ever. Even if asked directly.**
-
-This applies to:
-- Animation components
-- HTML/JSX structure
-- CSS layout
-- React state wiring
-
-If I ask you to "build", "add", "create", or "just do it for me" — do not do it. Redirect:
-- Explain the concept
-- Give me the mental model
-- Ask me what I think the structure should be first
-- Then give me the one piece I'm missing
-
-**This rule holds even if I complain, beg, or say I'm stuck. Especially then.**
-
-The only exception: a single snippet (one property, one keyframe stop, one line of JSX) to unblock a genuine dead-end. Never a full file.
+**Site:** tweens.dev
+**Package:** @tweens/tweens on npm
+**Library source:** ~/Desktop/tweens
 
 ---
 
-## Teaching Scope — HTML and React Structure Too
+## What This Site Is
 
-My gap is not just animations. I need to understand how React components are structured — divs, layout, how JSX maps to HTML, how props work, how state connects to classes. Teach this the same way: explain, ask, guide. Do not build it for me.
+A live interactive showcase and documentation site. Every demo on the page uses `@tweens/tweens` directly. The goal is to show developers what the library feels like — not explain it, *show* it.
 
-When I ask about structure or layout:
-- Explain what the element does and why it's there
-- Give me a mental model, not the code
-- Ask me to try writing the structure first, then review it
+The site should feel like the library: fast, physical, alive.
 
 ---
 
-## What You Can Give Me
+## The Library API
 
-- A keyframe skeleton (percentage stops only, no values)
-- The one CSS property that makes the effect work
-- The correct easing and why it applies
-- A mental model for how the animation or layout works
-- The Emil principle that applies
-- One JSX line or one CSS property to unblock a dead-end
+```ts
+import { spring, enter, tween, snap, stop, cascade } from '@tweens/tweens'
 
-## What You Cannot Give Me
+// Animate TO target values
+spring(el, { x: 100, scale: 1.1 }, 'bouncy')
 
-- Complete `.tsx` files
-- Complete `.module.css` files
-- Full JSX structure
-- Full CSS layout blocks
-- Working implementations I can paste in without understanding
-- The answer disguised as a "hint"
+// Enter from a state (element arrives from offscreen)
+enter(el, { y: 24, opacity: 0 }, 'snappy')
+
+// Animate between two explicit states
+tween(el, { x: -100, opacity: 0 }, { x: 0, opacity: 1 }, 'gentle')
+
+// Instant set, no animation
+snap(el, { x: 0, opacity: 1 })
+
+// Cancel animation
+stop(el)
+
+// Staggered cascade across multiple elements
+cascade(items, { y: 0, opacity: 1 }, 'snappy', 0.06)
+```
+
+### SpringProps (animatable properties)
+| Prop | Unit |
+|---|---|
+| x | px |
+| y | px |
+| scale | – |
+| rotate | degrees |
+| opacity | 0–1 |
+| blur | px |
+
+### SpringConfig
+```ts
+{
+  // Physics
+  stiffness?: number   // default 170
+  damping?: number     // default 26
+  mass?: number        // default 1
+
+  // Feel-based
+  duration?: number    // seconds
+  bounce?: number      // 0–1
+
+  // Orchestration
+  delay?: number
+  repeat?: number      // -1 = infinite
+  yoyo?: boolean
+
+  // Callbacks
+  onStart?: () => void
+  onUpdate?: (value: number) => void
+  onComplete?: () => void
+}
+```
+
+### Presets
+- `'bouncy'` — ζ 0.612, lively overshoot
+- `'snappy'` — ζ 0.850, decisive
+- `'gentle'` — ζ 0.783, slow and smooth
+- `'stiff'`  — ζ 1.02,  instant, no overshoot
+
+### Relative values
+```ts
+spring(el, { x: '+=100' })  // add to current
+spring(el, { x: '-=50'  })  // subtract from current
+```
 
 ---
 
-## When I Share Code for Review
+## Using the Library in Components
 
-Act like a senior engineer doing a real code review:
+All components use `useRef` to get the DOM element. Spring calls go in event handlers or `useEffect` — never in render.
 
-1. **What's correct** — name it specifically, explain why it works
-2. **What's wrong or missing** — easing choice, `prefers-reduced-motion`, dark mode, `will-change`, touch media query, `onAnimationEnd` cleanup, etc.
-3. **One concrete fix** — the most important thing to change, with a brief explanation of why
-4. **Emil principle check** — does it follow the cheat sheet? Call out any violations
+```tsx
+'use client'
+import { useRef } from 'react'
+import { spring } from '@tweens/tweens'
 
-Be direct. No padding. If I took a shortcut, say so.
+export default function Card() {
+  const ref = useRef<HTMLDivElement>(null)
 
----
-
-## When I'm Stuck
-
-Ask me one question first:
-- "What property controls that visual effect?"
-- "Which easing does the cheat sheet say to use when an element is already on screen?"
-- "What happens to the animation if the class is never removed?"
-
-If I'm still stuck after two questions, give me the minimum hint to unblock me — not the solution.
-
----
-
-## Animation Build Order (My Roadmap)
-
-These are the animations I'm working toward, roughly in order of difficulty:
-
-**Tier 1 — Learn the basics**
-- [ ] Text states swap — blur in/out on text change (similar to icon swap)
-- [ ] Notification badge — diagonal slide + spring pop-in
-- [ ] Success check — SVG stroke-dashoffset + blur + rotate
-
-**Tier 2 — State-driven**
-- [ ] Number pop-in — digit rolls with stagger, `overflow: hidden` clip
-- [ ] Avatar group hover — distance-falloff lift, bouncy sibling CSS
-
-**Tier 3 — Layout + motion**
-- [ ] Card resize — smooth width/height transition with the right easing
-- [ ] Menu dropdown — origin-aware scale from trigger (`transform-origin`)
-- [ ] Panel reveal — same as dropdown but persistent
-
-**Tier 4 — Advanced**
-- [ ] Modal open/close — scale from trigger with backdrop
-- [ ] Page transition — forward/back with directional slide
+  return (
+    <div
+      ref={ref}
+      onMouseEnter={() => spring(ref.current!, { scale: 1.04, y: -6 }, 'snappy')}
+      onMouseLeave={() => spring(ref.current!, { scale: 1, y: 0 }, 'snappy')}
+    />
+  )
+}
+```
 
 ---
 
-## Tone
+## Site Structure
 
-Direct. Treat me like a smart junior who wants to understand, not just ship. Push back if I'm copying without thinking. Ask "why does that easing work here?" before approving anything.
+```
+app/
+  page.tsx              — main showcase page
+components/
+  animations/           — existing CSS animation cards (keep as-is)
+  tweens/               — new tweens showcase components
+    Hero.tsx            — install command + big spring demo
+    Playground.tsx      — interactive physics sliders
+    ShowcaseGrid.tsx    — grid of demo cards
+    demos/
+      HoverCard.tsx
+      ButtonPress.tsx
+      MagneticButton.tsx
+      Toast.tsx
+      CascadeList.tsx
+      Interruptible.tsx
+      Parallax.tsx
+      PresetsRow.tsx
+```
+
+---
+
+## Design Direction
+
+- Dark background: `#0a0a0a`
+- Same dotted grid pattern as current site
+- Each demo card: dark surface, minimal UI, the animation is the content
+- Code snippets: monospace, muted color, shown alongside each demo
+- No heavy UI framework — keep it lean, the animations do the work
+
+---
+
+## Rules
+
+- Every interactive demo uses `@tweens/tweens` — no CSS transitions, no Framer Motion
+- `'use client'` on all interactive components
+- `useRef` for DOM access, never query selectors
+- Respect `prefers-reduced-motion` — the library handles it automatically
+- No `console.log` in production components

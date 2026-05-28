@@ -45,7 +45,7 @@ function PresetBox({ name, color }: { name: typeof PRESETS[number]['name'], colo
 export function PresetsDemo() {
   return (
     <div className="not-prose my-8">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {PRESETS.map(p => (
           <PresetBox key={p.name} name={p.name} color={p.color} />
         ))}

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     template: '%s — tweens',
   },
   description:
-    'Spring animations that feel alive. Physics-accurate, interruptible, zero dependencies. ~2kb gzipped.',
+    'Spring animations that feel alive. Interruptible, Promise-based, ~2kb gzipped, zero dependencies. Works with React, Vue, Svelte, or plain JavaScript.',
   keywords: [
     'animation',
     'spring animation',
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     siteName: 'tweens',
     title: 'tweens — The lightweight animation library for the web',
     description:
-      'Spring animations that feel alive. Physics-accurate, interruptible, zero dependencies. ~2kb gzipped.',
+      'Spring animations that feel alive. Interruptible, Promise-based, ~2kb gzipped, zero dependencies. Works with React, Vue, Svelte, or plain JavaScript.',
     images: [
       {
         url: '/opengraph-image',
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     creator: '@rcuffdev',
     title: 'tweens — The lightweight animation library for the web',
     description:
-      'Spring animations that feel alive. Physics-accurate, interruptible, zero dependencies. ~2kb gzipped.',
+      'Spring animations that feel alive. Interruptible, Promise-based, ~2kb gzipped, zero dependencies. Works with React, Vue, Svelte, or plain JavaScript.',
     images: ['/opengraph-image'],
   },
   robots: {

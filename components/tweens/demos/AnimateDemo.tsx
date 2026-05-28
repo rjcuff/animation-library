@@ -47,7 +47,7 @@ export function AnimateDemo() {
   }
 
   return (
-    <div className="not-prose my-8 flex gap-4">
+    <div className="not-prose my-8 flex flex-col sm:flex-row gap-4">
       <AnimBox
         color="bg-violet-400/70"
         label="'bouncy' spring"

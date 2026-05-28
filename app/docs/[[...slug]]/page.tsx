@@ -34,17 +34,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const page = source.getPage(slug)
   if (!page) notFound()
 
+  const title = `${page.data.title} — tweens`
+  const description = page.data.description
+  const url = `https://tweens.dev/docs/${slug?.join('/') ?? ''}`
+
   return {
-    title: page.data.title,
-    description: page.data.description,
+    title,
+    description,
     openGraph: {
-      title: page.data.title,
-      description: page.data.description,
-      url: `https://tweens.dev/docs/${slug?.join('/') ?? ''}`,
+      title,
+      description,
+      url,
+      images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: title }],
     },
     twitter: {
-      title: page.data.title,
-      description: page.data.description,
+      card: 'summary_large_image',
+      title,
+      description,
+      images: ['/opengraph-image'],
     },
   }
 }

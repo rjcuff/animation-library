@@ -4,9 +4,9 @@ import { sequence, spring, snap } from '@tweens/tweens'
 import { DemoCard } from '../DemoCard'
 
 const CODE = `await sequence([
-  () => spring(a, { x: 0, opacity: 1 }, 'snappy'),
-  () => spring(b, { x: 0, opacity: 1 }, 'snappy'),
-  () => spring(c, { x: 0, opacity: 1 }, 'snappy'),
+  () => spring(a, { x: 0, opacity: 1 }, 'gentle'),
+  () => spring(b, { x: 0, opacity: 1 }, 'gentle'),
+  () => spring(c, { x: 0, opacity: 1 }, 'gentle'),
 ])`
 
 const ITEMS = ['First item', 'Second item', 'Third item']
@@ -15,8 +15,8 @@ export function SequenceDemo() {
   const refs = useRef<HTMLDivElement[]>([])
   const run = async () => {
     const els = refs.current.filter(Boolean)
-    els.forEach(el => snap(el, { x: -24, opacity: 0 }))
-    await sequence(els.map(el => () => spring(el, { x: 0, opacity: 1 }, 'snappy')))
+    els.forEach(el => snap(el, { x: -20, opacity: 0 }))
+    await sequence(els.map(el => () => spring(el, { x: 0, opacity: 1 }, 'gentle')))
   }
   return (
     <DemoCard code={CODE} onAnimate={run}>

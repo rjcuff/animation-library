@@ -3,7 +3,8 @@ import { useRef } from 'react'
 import { cascade, snap } from '@tweens/tweens'
 import { DemoCard } from '../DemoCard'
 
-const CODE = `cascade(els, { y: 0, opacity: 1 }, 'snappy', 0.07)`
+const CODE = `snap(els, { y: 16, opacity: 0, scale: 0.8 })
+cascade(els, { y: 0, opacity: 1, scale: 1 }, 'snappy', 0.07)`
 
 const AVATARS = [
   'from-violet-400/40 to-purple-600/20',
@@ -17,8 +18,8 @@ export function CascadeDemo() {
   const refs = useRef<HTMLDivElement[]>([])
   const animate = () => {
     const els = refs.current.filter(Boolean)
-    els.forEach(el => snap(el, { y: 20, opacity: 0 }))
-    requestAnimationFrame(() => cascade(els, { y: 0, opacity: 1 }, 'snappy', 0.07))
+    els.forEach(el => snap(el, { y: 16, opacity: 0, scale: 0.8 }))
+    requestAnimationFrame(() => cascade(els, { y: 0, opacity: 1, scale: 1 }, 'snappy', 0.07))
   }
   return (
     <DemoCard code={CODE} onAnimate={animate}>

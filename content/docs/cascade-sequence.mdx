@@ -1,24 +1,31 @@
 ---
 title: cascade() / sequence()
-description: Orchestration helpers. cascade() staggers a list. sequence() runs animations one after another.
+description: Orchestration helpers. cascade() staggers a list with a time offset. sequence() runs animations one after another.
 ---
 
 ## cascade()
 
-<CascadeDemo />
+Animates a list of elements with a delay between each start. All animations run concurrently — they just begin at staggered times.
 
-Animate a list of elements with a time offset between each. All animations run in parallel but start at staggered times.
+<CascadeDemo />
 
 ```ts
 import { cascade } from '@tweens/tweens'
 
 const items = document.querySelectorAll('.item')
 
-// Stagger in — 60ms between each element
-cascade(items, { y: 0, opacity: 1 }, 'snappy', 0.06)
+// Stagger in — 70ms between each
+cascade(items, { y: 0, opacity: 1 }, 'snappy', 0.07)
 
-// In React with ref arrays
-cascade(itemRefs.current, { y: 0, opacity: 1 }, 'gentle', 0.08)
+// In React
+cascade(itemRefs.current, { y: 0, opacity: 1 }, 'gentle', 0.05)
+```
+
+Before calling `cascade()`, reset the elements to their starting state with `snap()`:
+
+```ts
+els.forEach(el => snap(el, { y: 16, opacity: 0 }))
+cascade(els, { y: 0, opacity: 1 }, 'snappy', 0.07)
 ```
 
 ### Signature
@@ -28,25 +35,29 @@ cascade(
   els: NodeListOf<Element> | HTMLElement[],
   props: AnimateProps,
   options?: AnimateOptions | SpringPreset,
-  interval?: number,    // seconds between each element, default 0.05
+  interval?: number,    // seconds between each, default 0.05
 ): Promise<void>
 ```
 
 ## sequence()
 
+Runs each step serially — the next animation starts only after the previous one settles.
+
 <SequenceDemo />
 
-Run an array of animation functions serially — each waits for the previous to settle before starting. Great for multi-step reveals, onboarding flows, or anything that needs strict ordering.
+Each square waits for the one before it to finish. The difference from `cascade()`: cascade staggers but runs in parallel, sequence is strictly serial.
 
 ```ts
-import { sequence, spring, enter } from '@tweens/tweens'
+import { sequence, spring, enter, cascade } from '@tweens/tweens'
 
 await sequence([
   () => enter(header, { y: 20, opacity: 0 }, 'snappy'),
   () => enter(body, { y: 16, opacity: 0 }, 'gentle'),
-  () => cascade(items, { y: 0, opacity: 1 }, 'snappy', 0.06),
+  () => cascade(cards, { y: 0, opacity: 1 }, 'snappy', 0.06),
 ])
 ```
+
+Because `sequence()` accepts functions that return Promises, you can mix any tweens calls — or any Promise-returning function.
 
 ### Signature
 
@@ -54,15 +65,4 @@ await sequence([
 sequence(
   steps: Array<() => Promise<void>>,
 ): Promise<void>
-```
-
-### Combining cascade + sequence
-
-```ts
-// Animate in three sections, one after another
-await sequence([
-  () => spring(nav, { y: 0, opacity: 1 }, 'snappy'),
-  () => enter(hero, { scale: 0.96, opacity: 0 }, 'gentle'),
-  () => cascade(cards, { y: 0, opacity: 1 }, 'snappy', 0.06),
-])
 ```

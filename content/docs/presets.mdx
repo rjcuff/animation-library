@@ -3,57 +3,58 @@ title: Presets
 description: Four named spring configs. Pass as a string instead of a config object.
 ---
 
-<PresetsDemo />
-
-Pass a preset string as the third argument to any spring function.
+Pass a preset string as the third argument to any spring function instead of a config object.
 
 ```ts
-spring(el, { y: -4 }, 'snappy')
+spring(el, { scale: 1.04 }, 'snappy')
 enter(el, { opacity: 0, y: 12 }, 'gentle')
-animate(el, { scale: 1.1 }, 'bouncy')
+animate(el, { x: 100 }, 'bouncy')
 ```
 
-## The four presets
+## Comparison
 
-| Preset | Damping ratio | Character |
-|--------|--------------|-----------|
-| `'bouncy'` | ζ 0.612 | Lively — ~9% overshoot, great for playful interactions |
-| `'snappy'` | ζ 0.850 | Decisive — very slight overshoot, hover/drag/focus states |
-| `'gentle'` | ζ 0.783 | Slow and smooth — entrances, reveals, backdrop transitions |
-| `'stiff'` | ζ 1.02+ | Overdamped — instant, no bounce, critical UI feedback |
+Hit Play to see how each preset feels across the same distance.
+
+<PresetsDemo />
 
 ## When to use each
 
-**`bouncy`** — buttons that feel alive, draggable items snapping back, fun micro-interactions.
+**`bouncy`** — Elements that should feel playful or alive. Draggable items snapping back, icon button feedback, anything you want to feel lively.
 
-**`snappy`** — hover lifts, focus rings, sidebar expand/collapse, anything the user directly triggers.
+**`snappy`** — The default for most hover and interaction states. Fast enough to feel responsive, controlled enough to feel professional.
 
-**`gentle`** — page entrances, modals fading in, scroll-triggered reveals. Slow enough to feel intentional.
+**`gentle`** — Page entrances, modals fading in, content reveals. Slow enough to feel intentional without being sluggish.
 
-**`stiff`** — press feedback (scale down on mousedown), immediate state responses where animation would feel laggy.
+**`stiff`** — Press feedback (scale down on `mousedown`), immediate UI state responses where any bounce would feel laggy or wrong.
+
+## Rotate with bounce
 
 <RotateDemo />
 
+```ts
+spring(el, { rotate: 180 }, 'bouncy')
+```
+
 ## Custom physics
 
-When presets aren't exactly right, reach for physics params:
+When the presets don't fit, configure the spring directly with `stiffness`, `damping`, and `mass`.
 
 ```ts
 spring(el, { x: 100 }, {
-  stiffness: 300,  // higher = snappier
-  damping:   20,   // higher = less bounce
-  mass:      1,    // higher = heavier feel
+  stiffness: 300,  // how rigid the spring is
+  damping:   20,   // how quickly oscillation decays
+  mass:      1,    // heavier = slower to start and stop
 })
 ```
 
-Damping ratio: `ζ = damping / (2 × √(stiffness × mass))`
-- `ζ < 1` — underdamped, oscillates
-- `ζ = 1` — critically damped, fastest settle with zero overshoot
-- `ζ > 1` — overdamped, slow creep
+The damping ratio `ζ = damping / (2 × √(stiffness × mass))` determines behavior:
+- `ζ < 1` — overshoots and oscillates (underdamped)
+- `ζ = 1` — fastest settle with zero overshoot (critically damped)
+- `ζ > 1` — slow creep to target (overdamped)
 
 ## Feel-based config
 
-Don't want to think about physics? Use `duration` + `bounce`:
+If you don't want to think in physics units, use `duration` + `bounce`:
 
 ```ts
 spring(el, { x: 100 }, {

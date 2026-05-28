@@ -1,51 +1,55 @@
 'use client'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { spring, snap } from '@tweens/tweens'
-import { DemoCard } from '../DemoCard'
-
-const CODE = `spring(el, { x: 0 }, 'bouncy')
-spring(el, { x: 0 }, 'snappy')
-spring(el, { x: 0 }, 'gentle')
-spring(el, { x: 0 }, 'stiff')`
+import { RotateCcw } from 'lucide-react'
 
 const PRESETS = [
-  { name: 'bouncy', color: 'bg-violet-400' },
-  { name: 'snappy', color: 'bg-blue-400' },
-  { name: 'gentle', color: 'bg-emerald-400' },
-  { name: 'stiff',  color: 'bg-orange-400' },
+  { name: 'bouncy', color: '#a78bfa' },
+  { name: 'snappy', color: '#60a5fa' },
+  { name: 'gentle', color: '#34d399' },
+  { name: 'stiff',  color: '#fbbf24' },
 ] as const
 
-export function PresetsDemo() {
-  const dotRefs = useRef<HTMLDivElement[]>([])
+function PresetBox({ name, color }: { name: typeof PRESETS[number]['name'], color: string }) {
+  const ref = useRef<HTMLDivElement>(null)
 
   const animate = () => {
-    dotRefs.current.forEach((el, i) => {
-      if (!el) return
-      snap(el, { x: -52 })
-      setTimeout(() => {
-        spring(el, { x: 0 }, PRESETS[i].name)
-      }, 30)
-    })
+    if (!ref.current) return
+    snap(ref.current, { x: -70 })
+    setTimeout(() => spring(ref.current!, { x: 0 }, name), 30)
   }
 
   return (
-    <DemoCard
-      title="Presets"
-      description="bouncy · snappy · gentle · stiff"
-      code={CODE}
-      onAnimate={animate}
-    >
-      <div className="flex flex-col gap-3 w-44">
-        {PRESETS.map(({ name, color }, i) => (
-          <div key={name} className="flex items-center gap-3">
-            <div
-              ref={el => { if (el) dotRefs.current[i] = el }}
-              className={`w-3 h-3 rounded-full ${color} shrink-0`}
-            />
-            <span className="text-xs font-mono text-white/30">{name}</span>
-          </div>
+    <div className="not-prose flex-1">
+      {/* Preview */}
+      <div className="relative rounded-xl border border-white/[0.07] bg-[#0d0d0d] h-[200px] flex items-center justify-center overflow-hidden">
+        <div
+          ref={ref}
+          className="w-16 h-16 rounded-2xl"
+          style={{ backgroundColor: color + '33', border: `1px solid ${color}44` }}
+        />
+        <button
+          onClick={animate}
+          className="absolute bottom-3 right-3 flex items-center justify-center w-8 h-8 rounded-lg text-white/30 hover:text-white/70 hover:bg-white/[0.07] transition-colors"
+          aria-label="Replay"
+        >
+          <RotateCcw size={13} />
+        </button>
+      </div>
+      {/* Label outside */}
+      <p className="mt-2 text-[11px] font-mono text-white/35">'{name}'</p>
+    </div>
+  )
+}
+
+export function PresetsDemo() {
+  return (
+    <div className="not-prose my-8">
+      <div className="grid grid-cols-2 gap-4">
+        {PRESETS.map(p => (
+          <PresetBox key={p.name} name={p.name} color={p.color} />
         ))}
       </div>
-    </DemoCard>
+    </div>
   )
 }

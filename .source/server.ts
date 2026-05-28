@@ -1,9 +1,10 @@
 // @ts-nocheck
-import * as __fd_glob_8 from "../content/docs/spring.mdx?collection=docs"
-import * as __fd_glob_7 from "../content/docs/properties.mdx?collection=docs"
-import * as __fd_glob_6 from "../content/docs/presets.mdx?collection=docs"
-import * as __fd_glob_5 from "../content/docs/on-visible.mdx?collection=docs"
-import * as __fd_glob_4 from "../content/docs/index.mdx?collection=docs"
+import * as __fd_glob_9 from "../content/docs/spring.mdx?collection=docs"
+import * as __fd_glob_8 from "../content/docs/properties.mdx?collection=docs"
+import * as __fd_glob_7 from "../content/docs/presets.mdx?collection=docs"
+import * as __fd_glob_6 from "../content/docs/on-visible.mdx?collection=docs"
+import * as __fd_glob_5 from "../content/docs/index.mdx?collection=docs"
+import * as __fd_glob_4 from "../content/docs/getting-started.mdx?collection=docs"
 import * as __fd_glob_3 from "../content/docs/enter-tween.mdx?collection=docs"
 import * as __fd_glob_2 from "../content/docs/cascade-sequence.mdx?collection=docs"
 import * as __fd_glob_1 from "../content/docs/animate.mdx?collection=docs"
@@ -16,4 +17,4 @@ const create = server<typeof Config, import("fumadocs-mdx/runtime/types").Intern
   }
 }>({"doc":{"passthroughs":["extractedReferences"]}});
 
-export const docs = await create.docs("docs", "content/docs", {"meta.json": __fd_glob_0, }, {"animate.mdx": __fd_glob_1, "cascade-sequence.mdx": __fd_glob_2, "enter-tween.mdx": __fd_glob_3, "index.mdx": __fd_glob_4, "on-visible.mdx": __fd_glob_5, "presets.mdx": __fd_glob_6, "properties.mdx": __fd_glob_7, "spring.mdx": __fd_glob_8, });
+export const docs = await create.docs("docs", "content/docs", {"meta.json": __fd_glob_0, }, {"animate.mdx": __fd_glob_1, "cascade-sequence.mdx": __fd_glob_2, "enter-tween.mdx": __fd_glob_3, "getting-started.mdx": __fd_glob_4, "index.mdx": __fd_glob_5, "on-visible.mdx": __fd_glob_6, "presets.mdx": __fd_glob_7, "properties.mdx": __fd_glob_8, "spring.mdx": __fd_glob_9, });

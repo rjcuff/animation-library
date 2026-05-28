@@ -3,51 +3,34 @@ import { useRef } from 'react'
 import { enter, spring, snap } from '@tweens/tweens'
 import { DemoCard } from '../DemoCard'
 
-const CODE = `// Enter from below
-enter(el, { y: 20, opacity: 0 }, 'snappy')
-
-// Exit upward
-spring(el, { y: -12, opacity: 0 }, 'snappy')`
+const CODE = `enter(el, { y: 20, opacity: 0 }, 'snappy')
+// after 1.8s:
+spring(el, { y: -10, opacity: 0 }, 'snappy')`
 
 export function ToastDemo() {
-  const toastRef = useRef<HTMLDivElement>(null)
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-
+  const ref = useRef<HTMLDivElement>(null)
   const animate = () => {
-    const el = toastRef.current
+    const el = ref.current
     if (!el) return
-    if (timerRef.current) clearTimeout(timerRef.current)
-
     snap(el, { y: 20, opacity: 0 })
     requestAnimationFrame(() => {
       enter(el, { y: 20, opacity: 0 }, 'snappy')
-      timerRef.current = setTimeout(() => {
-        spring(el, { y: -12, opacity: 0 }, 'snappy')
-      }, 2000)
+      setTimeout(() => spring(el, { y: -10, opacity: 0 }, 'snappy'), 1800)
     })
   }
-
   return (
-    <DemoCard
-      title="Toast notification"
-      description="Slide in with enter, dismiss with spring"
-      code={CODE}
-      onAnimate={animate}
-    >
+    <DemoCard code={CODE} onAnimate={animate}>
       <div
-        ref={toastRef}
+        ref={ref}
         style={{ opacity: 0 }}
-        className="flex items-start gap-3 w-52 px-4 py-3 rounded-xl border border-white/[0.08] bg-[#1a1a1a]"
+        className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#111] border border-white/[0.1] shadow-xl shadow-black/40"
       >
-        <div className="mt-0.5 w-4 h-4 rounded-full bg-emerald-500/80 shrink-0 flex items-center justify-center">
-          <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
-            <path d="M1.5 4L3 5.5L6.5 2" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+        <div className="w-5 h-5 rounded-full bg-emerald-500/20 border border-emerald-500/35 flex items-center justify-center flex-shrink-0">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <path d="M2 5l2.5 2.5L8 3" stroke="#10b981" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
-        <div>
-          <p className="text-xs font-medium text-white/70">Saved</p>
-          <p className="text-xs text-white/30 mt-0.5">Changes applied</p>
-        </div>
+        <span className="text-sm font-medium text-white/65 whitespace-nowrap">Changes saved</span>
       </div>
     </DemoCard>
   )

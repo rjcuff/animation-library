@@ -2,6 +2,7 @@ import { source } from '@/lib/source'
 import { DocsPage, DocsBody, DocsTitle, DocsDescription } from 'fumadocs-ui/page'
 import { notFound } from 'next/navigation'
 import { getMDXComponents } from '@/mdx-components'
+import type { Metadata } from 'next'
 
 interface Props {
   params: Promise<{ slug?: string[] }>
@@ -14,7 +15,7 @@ export default async function Page({ params }: Props) {
 
   const MDX = page.data.body
   return (
-    <DocsPage toc={page.data.toc}>
+    <DocsPage toc={page.data.toc} full={false}>
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
@@ -28,9 +29,22 @@ export async function generateStaticParams() {
   return source.generateParams()
 }
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const page = source.getPage(slug)
   if (!page) notFound()
-  return { title: page.data.title, description: page.data.description }
+
+  return {
+    title: page.data.title,
+    description: page.data.description,
+    openGraph: {
+      title: page.data.title,
+      description: page.data.description,
+      url: `https://tweens.dev/docs/${slug?.join('/') ?? ''}`,
+    },
+    twitter: {
+      title: page.data.title,
+      description: page.data.description,
+    },
+  }
 }

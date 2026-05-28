@@ -1,57 +1,53 @@
 ---
 title: spring()
-description: Spring physics shorthand. Wraps animate() with spring mode — the most common call in any tweens project.
+description: Animate to target values using spring physics. The most common call in any tweens project.
 ---
 
-<ButtonPressDemo />
-
-`spring()` is sugar for `animate()` in spring mode. Every spring resolves when the element physically settles — no fixed duration, no guessing.
+`spring()` is the core function. Give it an element, the values you want to animate to, and an optional config. It returns a `Promise<void>` that resolves when the spring physically settles.
 
 ```ts
 import { spring } from '@tweens/tweens'
 
-spring(el, { scale: 1.04, y: -4 }, 'snappy')
-spring(el, { x: 0 }, { stiffness: 300, damping: 22 })
-spring(el, { opacity: 0 }, { duration: 0.4, bounce: 0.1 })
+spring(el, { x: 100, scale: 1.05 }, 'snappy')
+spring(el, { opacity: 0 }, { stiffness: 300, damping: 20 })
 ```
+
+## Press feedback
+
+Squeeze down on press, spring back on release. The `'stiff'` preset makes the compress instant — users perceive it as direct physical contact.
+
+<ButtonPressDemo />
 
 ## Hover lift
 
+Scale up and rise when hovered, return when the cursor leaves. If the user moves off mid-animation, the spring picks up from current position and velocity — no jumping.
+
 <HoverLiftDemo />
 
-The classic hover interaction. Springs carry velocity when interrupted, so hovering off mid-animation feels natural.
+## Interruptible
 
-```ts
-el.addEventListener('mouseenter', () => spring(el, { scale: 1.04, y: -6 }, 'snappy'))
-el.addEventListener('mouseleave', () => spring(el, { scale: 1, y: 0 }, 'gentle'))
-```
-
-## Interruptibility
+Call `spring()` on an element that's already mid-animation. The new spring inherits the current velocity — there's no snap or reset.
 
 <InterruptDemo />
 
-Call `spring()` on an element that's already animating — it picks up the current position **and velocity**. No snapping, no popping.
-
-```ts
-// Click mid-animation — velocity carries through
-spring(el, { x: 80 }, 'bouncy')
-spring(el, { x: -80 }, 'bouncy') // continues from wherever it is
-```
+Hit Play multiple times in a row to see velocity carry through each reversal.
 
 ## Signature
 
 ```ts
 spring(
   el: HTMLElement,
-  props: SpringProps,
+  props: AnimateProps,
   options?: SpringConfig | SpringPreset,
 ): Promise<void>
 ```
 
 ## Relative values
 
+Prefix with `+=` or `-=` to animate relative to the current position.
+
 ```ts
-spring(el, { x: '+=100' }) // move 100px right from current position
-spring(el, { x: '-=50'  }) // move 50px left
-spring(el, { scale: '+=0.05' })
+spring(el, { x: '+=100' })   // add 100px to current x
+spring(el, { x: '-=50'  })   // subtract 50px from current x
+spring(el, { scale: '-=0.05' })
 ```

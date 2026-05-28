@@ -1,52 +1,65 @@
 'use client'
 import { useRef } from 'react'
 import { animate, snap } from '@tweens/tweens'
-import { DemoCard } from '../DemoCard'
+import { RotateCcw } from 'lucide-react'
 
-const CODE = `// Spring — physics-based, no fixed duration
-animate(el, { x: 60 }, 'bouncy')
-
-// Easing — fixed duration + curve
-animate(el, { x: 60 }, { duration: 0.4, ease: 'easeOutBack' })`
+function AnimBox({
+  color,
+  label,
+  onPlay,
+  demoRef,
+}: {
+  color: string
+  label: string
+  onPlay: () => void
+  demoRef: React.RefObject<HTMLDivElement | null>
+}) {
+  return (
+    <div className="not-prose flex-1">
+      <div className="relative rounded-xl border border-white/[0.07] bg-[#0d0d0d] h-[220px] flex items-center justify-center overflow-hidden">
+        <div ref={demoRef} className={`w-16 h-16 rounded-2xl ${color}`} />
+        <button
+          onClick={onPlay}
+          className="absolute bottom-3 right-3 flex items-center justify-center w-8 h-8 rounded-lg text-white/30 hover:text-white/70 hover:bg-white/[0.07] transition-colors"
+        >
+          <RotateCcw size={13} />
+        </button>
+      </div>
+      <p className="mt-2 text-[11px] font-mono text-white/35">{label}</p>
+    </div>
+  )
+}
 
 export function AnimateDemo() {
   const springRef = useRef<HTMLDivElement>(null)
   const easingRef = useRef<HTMLDivElement>(null)
 
-  const runAnimate = () => {
-    if (springRef.current) {
-      snap(springRef.current, { x: -48 })
-      setTimeout(() => animate(springRef.current!, { x: 48 }, 'bouncy'), 30)
-    }
-    if (easingRef.current) {
-      snap(easingRef.current, { x: -48 })
-      setTimeout(() => animate(easingRef.current!, { x: 48 }, { duration: 0.5, ease: 'easeOutBack' }), 30)
-    }
+  const playSpring = () => {
+    if (!springRef.current) return
+    snap(springRef.current, { x: -56 })
+    setTimeout(() => animate(springRef.current!, { x: 56 }, 'bouncy'), 30)
+  }
+
+  const playEasing = () => {
+    if (!easingRef.current) return
+    snap(easingRef.current, { x: -56 })
+    setTimeout(() => animate(easingRef.current!, { x: 56 }, { duration: 0.55, ease: 'easeOutBack' }), 30)
   }
 
   return (
-    <DemoCard
-      title="animate()"
-      description="Spring mode vs easing mode — same function, different feel"
-      code={CODE}
-      onAnimate={runAnimate}
-    >
-      <div className="flex flex-col gap-5 w-48">
-        <div className="flex items-center gap-3">
-          <div
-            ref={springRef}
-            className="w-3 h-3 rounded-full bg-violet-400 shrink-0"
-          />
-          <span className="text-xs font-mono text-white/25">spring</span>
-        </div>
-        <div className="flex items-center gap-3">
-          <div
-            ref={easingRef}
-            className="w-3 h-3 rounded-full bg-blue-400 shrink-0"
-          />
-          <span className="text-xs font-mono text-white/25">easeOutBack</span>
-        </div>
-      </div>
-    </DemoCard>
+    <div className="not-prose my-8 flex gap-4">
+      <AnimBox
+        color="bg-violet-400/70"
+        label="'bouncy' spring"
+        onPlay={playSpring}
+        demoRef={springRef}
+      />
+      <AnimBox
+        color="bg-blue-400/70"
+        label="easeOutBack, 0.55s"
+        onPlay={playEasing}
+        demoRef={easingRef}
+      />
+    </div>
   )
 }

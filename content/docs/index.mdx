@@ -1,7 +1,23 @@
 ---
-title: Getting started
-description: Spring animations that feel alive. Zero dependencies, interruptible, Promise-based.
+title: Welcome
+description: tweens is a spring animation engine for the DOM. Physics-accurate, interruptible, zero dependencies.
 ---
+
+## What is tweens?
+
+tweens is a lightweight animation library that makes DOM elements move with **spring physics** — the same model used in iOS, Android, and Motion. Instead of picking an easing curve and a duration, you describe a spring: how stiff it is, how much it bounces. The element then physically settles to its target.
+
+The result is animation that feels responsive and alive rather than mechanical. Springs are also **interruptible** — if you start a new animation mid-way, the element continues from its current position and velocity with no snapping or jarring.
+
+## Why not CSS transitions?
+
+CSS transitions have a fixed duration and easing curve. If you interrupt one mid-way (hover off before it finishes), the element snaps to a new starting point. Springs don't — they carry velocity through any interruption, which is what makes interactions feel fluid.
+
+tweens also gives you a **Promise** when the animation settles, so you can sequence animations with `await` without managing timers.
+
+## Why not GSAP or Motion?
+
+GSAP is powerful but large (~40 KB gzipped). Motion requires React and adds significant bundle weight for a relatively simple task. tweens is **~2 KB gzipped**, has zero dependencies, and works on any DOM element — React, Vue, Svelte, or plain HTML.
 
 ## Install
 
@@ -9,61 +25,26 @@ description: Spring animations that feel alive. Zero dependencies, interruptible
 npm install @tweens/tweens
 ```
 
-## Quick start
+## Quick example
 
 ```ts
-import { spring, animate, enter } from '@tweens/tweens'
-
-const el = document.getElementById('card')
-
-// Spring to a position
-await spring(el, { x: 100, scale: 1.05 }, 'bouncy')
-
-// Easing-based animation
-await animate(el, { opacity: 1 }, { duration: 0.3, ease: 'easeOut' })
-
-// Entrance animation — slide in from below
-enter(el, { y: 24, opacity: 0 }, 'snappy')
-```
-
-## In React
-
-All functions take DOM elements. Use `useRef` — never query selectors.
-
-```tsx
-'use client'
-import { useRef } from 'react'
 import { spring } from '@tweens/tweens'
 
-export function Card() {
-  const ref = useRef<HTMLDivElement>(null)
+const card = document.getElementById('card')
 
-  return (
-    <div
-      ref={ref}
-      onMouseEnter={() => spring(ref.current!, { scale: 1.04, y: -4 }, 'snappy')}
-      onMouseLeave={() => spring(ref.current!, { scale: 1, y: 0 }, 'snappy')}
-    />
-  )
-}
+// Slide right with a bouncy spring
+spring(card, { x: 100 }, 'bouncy')
+
+// Fade in — returns a Promise
+await spring(card, { opacity: 1 }, 'gentle')
+
+// Chain animations
+await spring(card, { y: -8 })
+await spring(card, { scale: 1.05 })
 ```
 
-## What's in the box
+All animation functions return `Promise<void>`. The promise resolves when the spring physically settles — no guessing at durations.
 
-| Function | Description |
-|----------|-------------|
-| `animate()` | Unified engine — spring or easing mode |
-| `spring()` | Spring physics shorthand |
-| `enter()` | Animate from a state back to natural position |
-| `tween()` | Animate between two explicit states |
-| `snap()` | Instant set — no animation |
-| `stop()` | Cancel running animations |
-| `cascade()` | Staggered list animation |
-| `sequence()` | Run animations serially |
-| `onVisible()` | Trigger on scroll into viewport |
+## Browser support
 
-All animation functions return `Promise<void>` — awaitable, chainable.
-
-## Accessibility
-
-`prefers-reduced-motion` is respected automatically. When enabled, all functions resolve immediately without animating.
+Any browser that supports `requestAnimationFrame` and `WeakMap` — effectively all modern browsers. Automatically respects `prefers-reduced-motion`.

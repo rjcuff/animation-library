@@ -3,35 +3,24 @@ import { useRef } from 'react'
 import { spring } from '@tweens/tweens'
 import { DemoCard } from '../DemoCard'
 
-const CODE = `spring(el, { scale: 1.04, y: -8 }, 'snappy')
-spring(el, { scale: 1, y: 0 }, 'snappy')`
+const CODE = `spring(el, { y: -8, scale: 1.06 }, 'snappy')
+spring(el, { y:  0, scale: 1    }, 'snappy')`
 
 export function HoverLiftDemo() {
-  const cardRef = useRef<HTMLDivElement>(null)
-
-  const animate = () => {
-    if (!cardRef.current) return
-    spring(cardRef.current, { scale: 1.04, y: -8 }, 'snappy')
-    setTimeout(() => spring(cardRef.current!, { scale: 1, y: 0 }, 'gentle'), 600)
-  }
-
+  const ref = useRef<HTMLDivElement>(null)
   return (
-    <DemoCard
-      title="Hover lift"
-      description="Scale and translate on hover with spring"
-      code={CODE}
-      onAnimate={animate}
-    >
+    <DemoCard code={CODE} hint="hover the card">
       <div
-        ref={cardRef}
-        onMouseEnter={() => spring(cardRef.current!, { scale: 1.04, y: -8 }, 'snappy')}
-        onMouseLeave={() => spring(cardRef.current!, { scale: 1, y: 0 }, 'snappy')}
-        className="w-44 rounded-xl border border-white/10 bg-white/[0.04] p-5 cursor-default"
+        ref={ref}
+        onMouseEnter={() => spring(ref.current!, { y: -8, scale: 1.06 }, 'snappy')}
+        onMouseLeave={() => spring(ref.current!, { y: 0, scale: 1 }, 'snappy')}
+        className="w-40 rounded-2xl bg-[#111] border border-white/[0.1] p-5 cursor-pointer"
       >
-        <div className="h-2 rounded-full bg-white/15 mb-3 w-3/4" />
-        <div className="h-2 rounded-full bg-white/10 mb-3" />
-        <div className="h-2 rounded-full bg-white/10 mb-3 w-5/6" />
-        <div className="h-2 rounded-full bg-white/10 w-1/2" />
+        <div className="w-8 h-8 rounded-lg bg-white/[0.06] border border-white/[0.08] mb-4 flex items-center justify-center">
+          <div className="w-3 h-px bg-white/30 rounded-full" />
+        </div>
+        <p className="text-sm font-medium text-white/65 mb-1 tracking-tight">Hover lift</p>
+        <p className="text-[11px] text-white/25 font-mono">spring physics</p>
       </div>
     </DemoCard>
   )

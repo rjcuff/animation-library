@@ -1,0 +1,111 @@
+---
+title: Getting started
+description: Set up tweens in a React project, wire up your first animation, and understand the core mental model.
+---
+
+## Install
+
+```bash
+npm install @tweens/tweens
+```
+
+## The mental model
+
+Every tweens function takes a **DOM element**, a **set of properties to animate to**, and an optional **config**. That's it.
+
+```ts
+spring(element, { x: 100, opacity: 1 }, 'snappy')
+//     ↑ DOM el  ↑ target values         ↑ preset or config
+```
+
+The animation starts from wherever the element currently is and runs until it physically settles at the target. You never need to specify a starting value — tweens reads the current state automatically.
+
+## In React
+
+Use `useRef` to get a reference to the DOM element. Never use `document.querySelector` — you won't have a stable reference, and you'll fight React's rendering.
+
+```tsx
+'use client'
+import { useRef, useEffect } from 'react'
+import { spring, enter } from '@tweens/tweens'
+
+export function Card() {
+  const ref = useRef<HTMLDivElement>(null)
+
+  // Animate in on mount
+  useEffect(() => {
+    enter(ref.current!, { y: 20, opacity: 0 }, 'gentle')
+  }, [])
+
+  return (
+    <div
+      ref={ref}
+      style={{ opacity: 0 }}
+      onMouseEnter={() => spring(ref.current!, { y: -4, scale: 1.02 }, 'snappy')}
+      onMouseLeave={() => spring(ref.current!, { y: 0, scale: 1 }, 'snappy')}
+    />
+  )
+}
+```
+
+Set `style={{ opacity: 0 }}` on elements that animate in — otherwise they flash visible before the animation starts.
+
+## Your first animation
+
+### 1. A spring on hover
+
+The most common pattern. Two event listeners, each pointing the spring in a different direction.
+
+```ts
+el.addEventListener('mouseenter', () =>
+  spring(el, { y: -4, scale: 1.03 }, 'snappy')
+)
+el.addEventListener('mouseleave', () =>
+  spring(el, { y: 0, scale: 1 }, 'snappy')
+)
+```
+
+If the user leaves mid-animation, the spring picks up from the current position and velocity — no snapping.
+
+### 2. An entrance animation
+
+`enter()` snaps the element to a "from" state, then springs it back to where it naturally sits.
+
+```ts
+// On mount or when content appears
+enter(el, { y: 16, opacity: 0 }, 'snappy')
+```
+
+The element starts at `y: 16, opacity: 0` and springs to its natural position. You don't need to specify a target.
+
+### 3. Sequencing with await
+
+Because spring functions return Promises, you can sequence animations with `async/await` — no callback nesting required.
+
+```ts
+async function revealContent() {
+  await spring(heading, { y: 0, opacity: 1 }, 'snappy')
+  await spring(body, { y: 0, opacity: 1 }, 'gentle')
+  await cascade(cards, { y: 0, opacity: 1 }, 'snappy', 0.06)
+}
+```
+
+## Config shorthand: presets
+
+Four preset names cover most use cases. Pass them as the third argument instead of a config object.
+
+| Preset | Character |
+|--------|-----------|
+| `'bouncy'` | Lively, small overshoot — good for playful elements |
+| `'snappy'` | Fast and decisive — good for hover, focus, drag |
+| `'gentle'` | Slow and smooth — good for entrances and reveals |
+| `'stiff'` | Instant, no bounce — good for press feedback |
+
+```ts
+spring(el, { scale: 1.04 }, 'snappy')
+enter(el, { opacity: 0, y: 12 }, 'gentle')
+```
+
+## Accessibility
+
+tweens automatically checks `prefers-reduced-motion`. When the user has enabled reduced motion, all functions resolve instantly without animating — no code changes needed on your end.

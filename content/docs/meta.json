@@ -2,6 +2,7 @@
   "title": "tweens",
   "pages": [
     "index",
+    "getting-started",
     "animate",
     "spring",
     "enter-tween",

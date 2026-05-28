@@ -1,87 +1,66 @@
 'use client'
-import { useRef, useState } from 'react'
-import { Check, Copy } from 'lucide-react'
-import { spring } from '@tweens/tweens'
+import { useState } from 'react'
+import { Check, Copy, RotateCcw } from 'lucide-react'
 
 interface DemoCardProps {
-  title: string
-  description: string
-  code: string
   onAnimate?: () => void
+  hint?: string
+  code: string
   children: React.ReactNode
 }
 
 function CopyButton({ code }: { code: string }) {
   const [copied, setCopied] = useState(false)
-  const ref = useRef<HTMLButtonElement>(null)
-
   const copy = async () => {
-    if (ref.current) {
-      spring(ref.current, { scale: 0.88 }, 'stiff')
-      setTimeout(() => spring(ref.current!, { scale: 1 }, 'bouncy'), 80)
-    }
     await navigator.clipboard.writeText(code)
     setCopied(true)
     setTimeout(() => setCopied(false), 1500)
   }
-
   return (
     <button
-      ref={ref}
       onClick={copy}
-      className="shrink-0 flex items-center justify-center w-7 h-7 rounded-lg text-white/30 hover:text-white/60 hover:bg-white/[0.06] transition-colors"
-      aria-label="Copy code"
+      className="flex items-center gap-1.5 text-[11px] font-mono text-white/20 hover:text-white/55 transition-colors"
     >
-      {copied ? <Check size={13} /> : <Copy size={13} />}
+      {copied ? <Check size={11} /> : <Copy size={11} />}
+      {copied ? 'copied' : 'copy'}
     </button>
   )
 }
 
-export function DemoCard({ title, description, code, onAnimate, children }: DemoCardProps) {
-  const cardRef = useRef<HTMLDivElement>(null)
-  const btnRef = useRef<HTMLButtonElement>(null)
-
-  const onMouseEnter = () => {
-    if (cardRef.current) spring(cardRef.current, { y: -3, scale: 1.008 }, 'snappy')
-  }
-  const onMouseLeave = () => {
-    if (cardRef.current) spring(cardRef.current, { y: 0, scale: 1 }, 'gentle')
-  }
-  const onMouseDown = () => {
-    if (btnRef.current) spring(btnRef.current, { scale: 0.94 }, 'stiff')
-  }
-  const onMouseUp = () => {
-    if (btnRef.current) spring(btnRef.current, { scale: 1 }, 'bouncy')
-  }
-
+export function DemoCard({ onAnimate, hint, code, children }: DemoCardProps) {
   return (
-    <div
-      ref={cardRef}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      className="rounded-2xl border border-white/[0.07] bg-[#111111] overflow-hidden not-prose"
-    >
-      <div className="relative flex items-center justify-center h-[220px] p-6">
+    <div className="not-prose my-8">
+      {/* Preview — large, completely clean */}
+      <div className="relative rounded-xl border border-white/[0.07] bg-[#0d0d0d] h-[320px] flex items-center justify-center overflow-hidden">
         {children}
+
+        {/* Replay in bottom-right corner, like Motion */}
         {onAnimate && (
           <button
-            ref={btnRef}
             onClick={onAnimate}
-            onMouseDown={onMouseDown}
-            onMouseUp={onMouseUp}
-            onMouseLeave={onMouseUp}
-            className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-white text-black text-xs font-medium"
+            className="absolute bottom-3 right-3 flex items-center justify-center w-8 h-8 rounded-lg text-white/30 hover:text-white/70 hover:bg-white/[0.07] transition-colors"
+            aria-label="Replay"
           >
-            Animate
+            <RotateCcw size={14} />
           </button>
         )}
+
+        {/* Hover hint in bottom-right when no button */}
+        {!onAnimate && hint && (
+          <span className="absolute bottom-3 right-3 text-[10px] font-mono text-white/20">
+            {hint}
+          </span>
+        )}
       </div>
-      <div className="flex items-start justify-between px-4 py-3.5 border-t border-white/[0.05]">
-        <div>
-          <p className="text-sm text-white/70 font-medium leading-tight">{title}</p>
-          <p className="text-xs text-white/30 mt-0.5 leading-relaxed">{description}</p>
+
+      {/* Code + copy row below */}
+      <div className="mt-3 rounded-lg border border-white/[0.05] bg-[#0a0a0a] px-4 py-3">
+        <div className="flex items-start justify-between gap-4 mb-2">
+          <CopyButton code={code} />
         </div>
-        <CopyButton code={code} />
+        <pre className="text-[11px] font-mono text-white/40 leading-relaxed overflow-x-auto">
+          {code.trim()}
+        </pre>
       </div>
     </div>
   )

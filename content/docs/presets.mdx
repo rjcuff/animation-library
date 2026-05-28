@@ -19,13 +19,13 @@ Hit Play to see how each preset feels across the same distance.
 
 ## When to use each
 
-**`bouncy`** — Elements that should feel playful or alive. Draggable items snapping back, icon button feedback, anything you want to feel lively.
+**`bouncy`** is for things that should feel lively. Draggable items snapping back, icon button feedback, anything you want to feel playful and alive.
 
-**`snappy`** — The default for most hover and interaction states. Fast enough to feel responsive, controlled enough to feel professional.
+**`snappy`** is the default for most hover and interaction states. Fast and decisive without feeling wild.
 
-**`gentle`** — Page entrances, modals fading in, content reveals. Slow enough to feel intentional without being sluggish.
+**`gentle`** suits page entrances, modals opening, and content reveals. Slow enough to feel intentional.
 
-**`stiff`** — Press feedback (scale down on `mousedown`), immediate UI state responses where any bounce would feel laggy or wrong.
+**`stiff`** is for press feedback. No overshoot, no bounce — just an instant compress and release.
 
 ## Rotate with bounce
 
@@ -47,10 +47,7 @@ spring(el, { x: 100 }, {
 })
 ```
 
-The damping ratio `ζ = damping / (2 × √(stiffness × mass))` determines behavior:
-- `ζ < 1` — overshoots and oscillates (underdamped)
-- `ζ = 1` — fastest settle with zero overshoot (critically damped)
-- `ζ > 1` — slow creep to target (overdamped)
+Higher stiffness makes the spring faster and snappier. Higher damping reduces bounce. Lower damping with high stiffness gives you overshoot and oscillation. Mass makes the element feel heavier — slower to get moving and slower to stop.
 
 ## Feel-based config
 

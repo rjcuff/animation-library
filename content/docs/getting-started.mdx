@@ -15,7 +15,7 @@ Every tweens function takes a **DOM element**, a **set of properties to animate 
 
 ```ts
 spring(element, { x: 100, opacity: 1 }, 'snappy')
-//     ↑ DOM el  ↑ target values         ↑ preset or config
+// element, target values, then a preset or config object
 ```
 
 The animation starts from wherever the element currently is and runs until it physically settles at the target. You never need to specify a starting value — tweens reads the current state automatically.

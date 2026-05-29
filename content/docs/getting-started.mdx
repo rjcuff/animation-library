@@ -1,6 +1,6 @@
 ---
 title: Getting started
-description: Set up tweens in a React project, wire up your first animation, and understand the core mental model.
+description: Install tweens, wire up your first animation, understand the core model.
 ---
 
 ## Install
@@ -9,20 +9,19 @@ description: Set up tweens in a React project, wire up your first animation, and
 npm install @tweens/tweens
 ```
 
-## The mental model
+## The model
 
-Every tweens function takes a **DOM element**, a **set of properties to animate to**, and an optional **config**. That's it.
+Every tweens function takes a **DOM element**, the **properties to animate to**, and an optional **config**:
 
 ```ts
 spring(element, { x: 100, opacity: 1 }, 'snappy')
-// element, target values, then a preset or config object
 ```
 
-The animation starts from wherever the element currently is and runs until it physically settles at the target. You never need to specify a starting value — tweens reads the current state automatically.
+tweens reads the element's current state and runs until the spring settles. No from-values, no duration guessing.
 
 ## In React
 
-Use `useRef` to get a reference to the DOM element. Never use `document.querySelector` — you won't have a stable reference, and you'll fight React's rendering.
+Use `useRef` to get the DOM element. Avoid `document.querySelector` — you won't have a stable ref across renders.
 
 ```tsx
 'use client'
@@ -32,7 +31,6 @@ import { spring, enter } from '@tweens/tweens'
 export function Card() {
   const ref = useRef<HTMLDivElement>(null)
 
-  // Animate in on mount
   useEffect(() => {
     enter(ref.current!, { y: 20, opacity: 0 }, 'gentle')
   }, [])
@@ -40,7 +38,7 @@ export function Card() {
   return (
     <div
       ref={ref}
-      style={{ opacity: 0 }}
+      className="opacity-0"
       onMouseEnter={() => spring(ref.current!, { y: -4, scale: 1.02 }, 'snappy')}
       onMouseLeave={() => spring(ref.current!, { y: 0, scale: 1 }, 'snappy')}
     />
@@ -48,39 +46,30 @@ export function Card() {
 }
 ```
 
-Set `style={{ opacity: 0 }}` on elements that animate in — otherwise they flash visible before the animation starts.
+Add `className="opacity-0"` on elements that animate in. `enter()` reads the natural target state before snapping to the from-state, so it handles the pre-hidden case automatically.
 
-## Your first animation
+## Common patterns
 
-### 1. A spring on hover
-
-The most common pattern. Two event listeners, each pointing the spring in a different direction.
+### Hover
 
 ```ts
-el.addEventListener('mouseenter', () =>
-  spring(el, { y: -4, scale: 1.03 }, 'snappy')
-)
-el.addEventListener('mouseleave', () =>
-  spring(el, { y: 0, scale: 1 }, 'snappy')
-)
+el.addEventListener('mouseenter', () => spring(el, { y: -4, scale: 1.03 }, 'snappy'))
+el.addEventListener('mouseleave', () => spring(el, { y: 0, scale: 1 }, 'snappy'))
 ```
 
-If the user leaves mid-animation, the spring picks up from the current position and velocity — no snapping.
+Move off mid-animation and the spring picks up from current position and velocity — no snapping.
 
-### 2. An entrance animation
+### Entrance
 
-`enter()` snaps the element to a "from" state, then springs it back to where it naturally sits.
+`enter()` snaps the element to a from-state, then springs it back to its natural position.
 
 ```ts
-// On mount or when content appears
 enter(el, { y: 16, opacity: 0 }, 'snappy')
 ```
 
-The element starts at `y: 16, opacity: 0` and springs to its natural position. You don't need to specify a target.
+### Sequencing
 
-### 3. Sequencing with await
-
-Because spring functions return Promises, you can sequence animations with `async/await` — no callback nesting required.
+Spring functions return Promises, so you can chain with `async/await`:
 
 ```ts
 async function revealContent() {
@@ -90,22 +79,22 @@ async function revealContent() {
 }
 ```
 
-## Config shorthand: presets
+## Presets
 
-Four preset names cover most use cases. Pass them as the third argument instead of a config object.
+Four named presets cover most cases. Pass as the third argument:
 
-| Preset | Character |
-|--------|-----------|
-| `'bouncy'` | Lively, small overshoot — good for playful elements |
-| `'snappy'` | Fast and decisive — good for hover, focus, drag |
-| `'gentle'` | Slow and smooth — good for entrances and reveals |
-| `'stiff'` | Instant, no bounce — good for press feedback |
+| Preset | Feel |
+|--------|------|
+| `'snappy'` | Fast, no bounce — hover, focus, drag |
+| `'gentle'` | Slow, smooth — entrances, reveals |
+| `'bouncy'` | Subtle overshoot — drag-release, playful feedback |
+| `'stiff'` | Instant compress — press feedback |
 
 ```ts
-spring(el, { scale: 1.04 }, 'snappy')
+spring(el, { scale: 1.03 }, 'snappy')
 enter(el, { opacity: 0, y: 12 }, 'gentle')
 ```
 
 ## Accessibility
 
-tweens automatically checks `prefers-reduced-motion`. When the user has enabled reduced motion, all functions resolve instantly without animating — no code changes needed on your end.
+tweens checks `prefers-reduced-motion` automatically. Under reduced motion, animations resolve instantly — no extra code needed.

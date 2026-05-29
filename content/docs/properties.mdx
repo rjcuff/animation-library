@@ -1,11 +1,11 @@
 ---
 title: Properties
-description: Every animatable property, what unit it uses, and how it maps to CSS.
+description: Every animatable property, its unit, and how it maps to CSS.
 ---
 
 ## AnimateProps
 
-All properties are optional. Mix and match freely — multiple props on one element animate in parallel.
+All properties are optional. Mix freely — multiple props animate in parallel.
 
 ```ts
 animate(el, {
@@ -27,35 +27,42 @@ animate(el, {
 | `width` | px | `width` | computed |
 | `height` | px | `height` | computed |
 | `borderRadius` | px | `border-radius` | computed |
-| `backgroundColor` | hex/rgb | `background-color` | computed |
-| `color` | hex/rgb | `color` | computed |
+| `backgroundColor` | hex/rgb/rgba | `background-color` | computed |
+| `color` | hex/rgb/rgba | `color` | computed |
 
-Transform properties (`x`, `y`, `scale`, `rotate`) compose correctly — animating `x` won't clobber a separately running `scale` animation.
+`x`, `y`, `scale`, and `rotate` compose correctly — animating `x` won't disrupt a separately running `scale` animation.
 
 ## Color format
 
 `backgroundColor` and `color` accept:
 
 ```ts
-'#3b82f6'              // hex 6-digit
-'#f00'                 // hex 3-digit shorthand
-'rgb(59, 130, 246)'    // rgb()
+'#3b82f6'               // hex 6-digit
+'#f00'                  // hex 3-digit shorthand
+'rgb(59, 130, 246)'     // rgb()
+'rgba(59, 130, 246, 1)' // rgba() — alpha ignored, RGB preserved
 ```
+
+## Performance
+
+Only `transform` (x, y, scale, rotate) and `opacity` are GPU-composited — these skip layout and paint entirely. `blur` uses `filter`, which is composited on most devices. `width`, `height`, `borderRadius`, and color properties trigger layout or paint; use them for structural transitions, not continuous high-frequency animations.
+
+`will-change` is set automatically on animation start and cleared when all animations on an element settle.
 
 ## SpringConfig
 
 ```ts
 interface SpringConfig {
-  // Physics params (pick one set or neither for defaults)
+  // Physics params
   stiffness?: number        // spring constant, default 170
   damping?: number          // friction, default 26
   mass?: number             // inertia, default 1
 
-  // Feel-based (alternative to physics — use with spring() not animate())
+  // Feel-based (alternative to physics)
   duration?: number         // seconds until settled
-  bounce?: number           // 0 = no overshoot, 1 = maximum oscillation
+  bounce?: number           // 0 = no overshoot, 1 = max oscillation
 
-  // Orchestration (shared by both modes)
+  // Shared
   delay?: number            // seconds before start
   repeat?: number           // extra plays; -1 = infinite
   yoyo?: boolean            // reverse direction each repeat
@@ -69,10 +76,9 @@ interface SpringConfig {
 
 ```ts
 interface EasingConfig {
-  duration: number               // seconds
-  ease?: EasingName | EasingFn   // default 'easeOut'
+  duration: number
+  ease?: EasingName | EasingFn | [x1: number, y1: number, x2: number, y2: number]
 
-  // Orchestration (same as above)
   delay?: number
   repeat?: number
   yoyo?: boolean
@@ -82,31 +88,35 @@ interface EasingConfig {
 }
 
 type EasingName =
+  // ease-out family (enter/exit animations)
+  | 'easeOutQuad' | 'easeOutCubic' | 'easeOutQuart'
+  | 'easeOutQuint' | 'easeOutExpo' | 'easeOutCirc'
+  // ease-in-out family (on-screen movement)
+  | 'easeInOutQuad' | 'easeInOutCubic' | 'easeInOutQuart'
+  | 'easeInOutQuint' | 'easeInOutExpo' | 'easeInOutCirc'
+  // hover & color transitions
+  | 'ease'
+  // constant motion
   | 'linear'
+  // CSS equivalents
   | 'easeIn' | 'easeOut' | 'easeInOut'
-  | 'easeInBack' | 'easeOutBack'
-  | 'easeInElastic' | 'easeOutElastic'
 
 type EasingFn = (t: number) => number  // t ∈ [0, 1]
 ```
+
+Default ease is `'easeOutCubic'` when none is specified.
 
 ## snap() and stop()
 
 ```ts
 import { snap, stop } from '@tweens/tweens'
 
-// Instantly set properties — cancels any running animation for those props
+// Set properties instantly — cancels any running animation for those props
 snap(el, { x: 0, y: 0, scale: 1, opacity: 1 })
 
-// Cancel all animations on element
+// Cancel all animations on an element
 stop(el)
 
-// Cancel only a specific property
+// Cancel a specific property
 stop(el, 'x')
 ```
-
-## Performance
-
-Only GPU-composited properties are animated: `transform` (x, y, scale, rotate) and `opacity`. `blur` uses `filter` which is also composited on most devices. `width`, `height`, `borderRadius`, and color properties trigger layout/paint — use them sparingly for structural transitions, not continuous animations.
-
-`will-change` is set automatically on animation start and cleared when all springs on the element settle.

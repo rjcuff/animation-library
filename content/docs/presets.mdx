@@ -3,29 +3,27 @@ title: Presets
 description: Four named spring configs. Pass as a string instead of a config object.
 ---
 
-Pass a preset string as the third argument to any spring function instead of a config object.
+Pass a preset string as the third argument to any spring function:
 
 ```ts
-spring(el, { scale: 1.04 }, 'snappy')
+spring(el, { scale: 1.03 }, 'snappy')
 enter(el, { opacity: 0, y: 12 }, 'gentle')
 animate(el, { x: 100 }, 'bouncy')
 ```
 
 ## Comparison
 
-Hit Play to see how each preset feels across the same distance.
-
 <PresetsDemo />
 
 ## When to use each
 
-**`bouncy`** is for things that should feel lively. Draggable items snapping back, icon button feedback, anything you want to feel playful and alive.
+**`snappy`** is the default for most interactions — hover, focus, card lifts. Fast and settled with no bounce.
 
-**`snappy`** is the default for most hover and interaction states. Fast and decisive without feeling wild.
+**`gentle`** for entrances: modals, drawers, page sections. Unhurried but not slow.
 
-**`gentle`** suits page entrances, modals opening, and content reveals. Slow enough to feel intentional.
+**`bouncy`** has a subtle overshoot. Good for drag-to-dismiss, icon feedback, or any interaction that should feel elastic. Not the right choice for most UI — use `snappy` as your baseline.
 
-**`stiff`** is for press feedback. No overshoot, no bounce — just an instant compress and release.
+**`stiff`** for press feedback. Instant compress — users feel direct contact.
 
 ## Rotate with bounce
 
@@ -37,25 +35,27 @@ spring(el, { rotate: 180 }, 'bouncy')
 
 ## Custom physics
 
-When the presets don't fit, configure the spring directly with `stiffness`, `damping`, and `mass`.
+When presets don't fit, configure directly:
 
 ```ts
 spring(el, { x: 100 }, {
-  stiffness: 300,  // how rigid the spring is
-  damping:   20,   // how quickly oscillation decays
-  mass:      1,    // heavier = slower to start and stop
+  stiffness: 300,  // spring constant
+  damping:   28,   // friction
+  mass:      1,    // inertia
 })
 ```
 
-Higher stiffness makes the spring faster and snappier. Higher damping reduces bounce. Lower damping with high stiffness gives you overshoot and oscillation. Mass makes the element feel heavier — slower to get moving and slower to stop.
+Stiffness → speed. Damping → friction (higher = less bounce). Mass → inertia (higher = slower start and stop).
 
 ## Feel-based config
 
-If you don't want to think in physics units, use `duration` + `bounce`:
+Skip the physics parameters with `duration` + `bounce`:
 
 ```ts
 spring(el, { x: 100 }, {
   duration: 0.4,  // seconds until settled
-  bounce:   0.2,  // 0 = no overshoot, 1 = maximum oscillation
+  bounce:   0.15, // 0 = no overshoot, 1 = maximum oscillation
 })
 ```
+
+Keep `bounce` between 0 and 0.3 for most UI. Higher values get theatrical fast.

@@ -1,6 +1,6 @@
 ---
 title: cascade() / sequence()
-description: Orchestration helpers. cascade() staggers a list with a time offset. sequence() runs animations one after another.
+description: Orchestration helpers. cascade() staggers a list. sequence() runs animations one after another.
 ---
 
 ## cascade()
@@ -14,18 +14,15 @@ import { cascade } from '@tweens/tweens'
 
 const items = document.querySelectorAll('.item')
 
-// Stagger in — 70ms between each
-cascade(items, { y: 0, opacity: 1 }, 'snappy', 0.07)
-
-// In React
-cascade(itemRefs.current, { y: 0, opacity: 1 }, 'gentle', 0.05)
+// Stagger in — 60ms between each
+cascade(items, { y: 0, opacity: 1 }, 'snappy', 0.06)
 ```
 
-Before calling `cascade()`, reset the elements to their starting state with `snap()`:
+Reset elements to their starting state before calling `cascade()`:
 
 ```ts
-els.forEach(el => snap(el, { y: 16, opacity: 0 }))
-cascade(els, { y: 0, opacity: 1 }, 'snappy', 0.07)
+els.forEach(el => snap(el, { y: 12, opacity: 0, scale: 0.92 }))
+cascade(els, { y: 0, opacity: 1, scale: 1 }, 'snappy', 0.06)
 ```
 
 ### Signature
@@ -35,17 +32,17 @@ cascade(
   els: NodeListOf<Element> | HTMLElement[],
   props: AnimateProps,
   options?: AnimateOptions | SpringPreset,
-  interval?: number,    // seconds between each, default 0.05
+  interval?: number,    // seconds between each start, default 0.05
 ): Promise<void>
 ```
 
 ## sequence()
 
-Runs each step serially — the next animation starts only after the previous one settles.
+Runs each step serially — the next animation starts only after the previous settles.
 
 <SequenceDemo />
 
-Each square waits for the one before it to finish. The difference from `cascade()`: cascade staggers but runs in parallel, sequence is strictly serial.
+Unlike `cascade()` (staggered but parallel), `sequence()` is strictly serial.
 
 ```ts
 import { sequence, spring, enter, cascade } from '@tweens/tweens'
@@ -57,7 +54,7 @@ await sequence([
 ])
 ```
 
-Because `sequence()` accepts functions that return Promises, you can mix any tweens calls — or any Promise-returning function.
+`sequence()` accepts any function that returns a Promise, so you can mix tweens calls with any async operation.
 
 ### Signature
 

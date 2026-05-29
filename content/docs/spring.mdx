@@ -1,36 +1,36 @@
 ---
 title: spring()
-description: Animate to target values using spring physics. The most common call in any tweens project.
+description: Animate to target values with spring physics. The most common call in any tweens project.
 ---
 
-`spring()` is the core function. Give it an element, the values you want to animate to, and an optional config. It returns a `Promise<void>` that resolves when the spring physically settles.
+Give `spring()` an element, the values to animate to, and an optional config. It returns a `Promise<void>` that resolves when the spring settles.
 
 ```ts
 import { spring } from '@tweens/tweens'
 
-spring(el, { x: 100, scale: 1.05 }, 'snappy')
-spring(el, { opacity: 0 }, { stiffness: 300, damping: 20 })
+spring(el, { x: 100, scale: 1.03 }, 'snappy')
+spring(el, { opacity: 0 }, { stiffness: 300, damping: 28 })
 ```
 
 ## Press feedback
 
-Squeeze down on press, spring back on release. The `'stiff'` preset makes the compress instant — users perceive it as direct physical contact.
+Compress on press, spring back on release. `'stiff'` makes the compress feel instant — users perceive direct contact.
 
 <ButtonPressDemo />
 
 ## Hover lift
 
-Scale up and rise when hovered, return when the cursor leaves. If the user moves off mid-animation, the spring picks up from current position and velocity — no jumping.
+Scale up and rise on hover, return when the cursor leaves. Move off mid-animation and the spring picks up from wherever it is — no snapping.
 
 <HoverLiftDemo />
 
 ## Interruptible
 
-Call `spring()` on an element that's already mid-animation. The new spring inherits the current velocity — there's no snap or reset.
+Call `spring()` on an element already mid-animation. The new spring inherits the current velocity — no snap, no reset.
 
 <InterruptDemo />
 
-Hit Play multiple times in a row to see velocity carry through each reversal.
+Hit Play repeatedly to see velocity carry through each reversal.
 
 ## Signature
 
@@ -44,10 +44,10 @@ spring(
 
 ## Relative values
 
-Prefix with `+=` or `-=` to animate relative to the current position.
+Prefix with `+=` or `-=` to animate relative to the current position:
 
 ```ts
-spring(el, { x: '+=100' })   // add 100px to current x
-spring(el, { x: '-=50'  })   // subtract 50px from current x
+spring(el, { x: '+=100' })     // add 100px to current x
+spring(el, { x: '-=50' })      // subtract 50px
 spring(el, { scale: '-=0.05' })
 ```

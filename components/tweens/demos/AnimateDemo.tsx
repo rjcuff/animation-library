@@ -21,6 +21,7 @@ function AnimBox({
         <button
           onClick={onPlay}
           className="absolute bottom-3 right-3 flex items-center justify-center w-8 h-8 rounded-lg text-white/30 hover:text-white/70 hover:bg-white/[0.07] transition-colors"
+          aria-label="Replay"
         >
           <RotateCcw size={13} />
         </button>
@@ -34,29 +35,34 @@ export function AnimateDemo() {
   const springRef = useRef<HTMLDivElement>(null)
   const easingRef = useRef<HTMLDivElement>(null)
 
-  const playSpring = () => {
-    if (!springRef.current) return
-    snap(springRef.current, { x: -56 })
-    setTimeout(() => animate(springRef.current!, { x: 56 }, 'bouncy'), 30)
+  const playSpring = async () => {
+    const el = springRef.current
+    if (!el) return
+    snap(el, { x: -56 })
+    await animate(el, { x: 56 }, 'snappy')
+    // return home so the demo resets cleanly
+    setTimeout(() => animate(el, { x: 0 }, { duration: 0.5, bounce: 0 }), 400)
   }
 
-  const playEasing = () => {
-    if (!easingRef.current) return
-    snap(easingRef.current, { x: -56 })
-    setTimeout(() => animate(easingRef.current!, { x: 56 }, { duration: 0.55, ease: 'easeOutBack' }), 30)
+  const playEasing = async () => {
+    const el = easingRef.current
+    if (!el) return
+    snap(el, { x: -56 })
+    await animate(el, { x: 56 }, { duration: 0.35, ease: 'easeOutExpo' })
+    setTimeout(() => animate(el, { x: 0 }, { duration: 0.5, ease: 'easeInOutCubic' }), 400)
   }
 
   return (
     <div className="not-prose my-8 flex flex-col sm:flex-row gap-4">
       <AnimBox
         color="bg-violet-400/70"
-        label="'bouncy' spring"
+        label="spring 'snappy'"
         onPlay={playSpring}
         demoRef={springRef}
       />
       <AnimBox
         color="bg-blue-400/70"
-        label="easeOutBack, 0.55s"
+        label="easeOutExpo 350ms"
         onPlay={playEasing}
         demoRef={easingRef}
       />

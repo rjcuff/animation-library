@@ -3,7 +3,7 @@ import { useRef } from 'react'
 import { spring } from '@tweens/tweens'
 import { DemoCard } from '../DemoCard'
 
-const CODE = `spring(el, { y: -8, scale: 1.06 }, 'snappy')
+const CODE = `spring(el, { y: -4, scale: 1.03 }, 'snappy')
 spring(el, { y:  0, scale: 1    }, 'snappy')`
 
 export function HoverLiftDemo() {
@@ -12,7 +12,7 @@ export function HoverLiftDemo() {
     <DemoCard code={CODE} hint="hover the card">
       <div
         ref={ref}
-        onMouseEnter={() => spring(ref.current!, { y: -8, scale: 1.06 }, 'snappy')}
+        onMouseEnter={() => spring(ref.current!, { y: -4, scale: 1.03 }, 'snappy')}
         onMouseLeave={() => spring(ref.current!, { y: 0, scale: 1 }, 'snappy')}
         className="w-40 rounded-2xl bg-[#111] border border-white/[0.1] p-5 cursor-pointer"
       >

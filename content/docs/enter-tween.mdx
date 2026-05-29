@@ -5,24 +5,22 @@ description: Entrance helpers. enter() springs from a state back to natural posi
 
 ## enter()
 
-`enter()` snaps the element to a "from" state, then springs it back to wherever it currently sits. You describe where to come from — not where to go.
+`enter()` snaps the element to a from-state, then springs back to wherever it naturally sits. You describe where it comes from — not where it goes.
 
-This is the go-to for entrance animations. Set `style={{ opacity: 0 }}` on the element so it starts invisible, then call `enter()` on mount.
+Add `className="opacity-0"` (or `style={{ opacity: 0 }}`) to pre-hide the element. `enter()` reads the natural target state before writing the from-state, so the pre-hidden opacity is handled automatically.
 
 <ToastDemo />
-
-The toast enters from below, sits for a moment, then exits upward.
 
 ```ts
 import { enter } from '@tweens/tweens'
 
-// Slide up and fade in from below
+// Slide up and fade in
 enter(el, { y: 20, opacity: 0 }, 'snappy')
 
 // Scale in from slightly small
-enter(el, { scale: 0.94, opacity: 0 }, 'gentle')
+enter(el, { scale: 0.95, opacity: 0 }, 'gentle')
 
-// In React — call in useEffect
+// In React
 useEffect(() => {
   enter(ref.current!, { y: 16, opacity: 0 }, 'snappy')
 }, [])
@@ -40,7 +38,7 @@ enter(
 
 ## tween()
 
-`tween()` is the explicit version of `enter()`. You control both the starting state and the ending state.
+`tween()` is the explicit version — you control both the start and end state.
 
 ```ts
 import { tween } from '@tweens/tweens'
@@ -48,8 +46,8 @@ import { tween } from '@tweens/tweens'
 // Slide in from the left
 tween(el, { x: -120, opacity: 0 }, { x: 0, opacity: 1 }, 'gentle')
 
-// With easing instead of spring
-tween(el, { opacity: 0 }, { opacity: 1 }, { duration: 0.3, ease: 'easeOut' })
+// With easing
+tween(el, { opacity: 0 }, { opacity: 1 }, { duration: 0.3, ease: 'easeOutCubic' })
 ```
 
 ### Signature
@@ -65,7 +63,7 @@ tween(
 
 ## Magnetic follow
 
-Track cursor position by calling `spring()` on every `mousemove`. The spring config controls how tightly the element follows — `'snappy'` feels responsive, `'gentle'` feels sluggish.
+Track cursor position by calling `spring()` on every `mousemove`. The spring config controls how tightly the element follows.
 
 <MagneticDemo />
 
@@ -76,7 +74,5 @@ const onMouseMove = (e) => {
   const dy = (e.clientY - rect.top - rect.height / 2) * 0.45
   spring(el, { x: dx, y: dy }, 'snappy')
 }
-el.addEventListener('mouseleave', () =>
-  spring(el, { x: 0, y: 0 }, 'gentle')
-)
+el.addEventListener('mouseleave', () => spring(el, { x: 0, y: 0 }, 'gentle'))
 ```

@@ -1,55 +1,96 @@
 ---
 title: animate()
-description: The unified engine. Handles spring physics and easing curves — one function, two modes.
+description: The unified engine — spring physics or easing curves, one function.
 ---
 
-`animate()` is what `spring()`, `enter()`, and `tween()` all call internally. You can use it directly when you need easing curves instead of (or alongside) springs.
+`animate()` is what `spring()`, `enter()`, and `tween()` all call internally. Use it directly when you need easing curves.
 
-The mode is determined by the `ease` key:
+The mode switches on the `ease` key:
 
 ```ts
 import { animate } from '@tweens/tweens'
 
 // Spring mode — physics, no fixed duration
-animate(el, { x: 100 }, 'bouncy')
-animate(el, { x: 100 }, { stiffness: 300, damping: 20 })
+animate(el, { x: 100 }, 'snappy')
+animate(el, { x: 100 }, { stiffness: 300, damping: 28 })
 
-// Easing mode — 'ease' key switches the mode
-animate(el, { x: 100 }, { duration: 0.4, ease: 'easeOut' })
-animate(el, { x: 100 }, { duration: 0.5, ease: 'easeOutBack' })
+// Easing mode — 'ease' key switches the engine
+animate(el, { x: 100 }, { duration: 0.35, ease: 'easeOutExpo' })
+animate(el, { x: 100 }, { duration: 0.4, ease: [0.19, 1, 0.22, 1] })
 ```
 
 ## Spring vs easing
 
-Both use the same API. The difference is in feel — springs overshoot and settle naturally, easings follow a fixed curve.
-
 <AnimateDemo />
 
-Bouncy spring overshoots the target; easeOutBack touches the target then pulls back. Both start and end in the same place.
+Both cover the same distance. The spring settles naturally with no fixed endpoint; the easing stops exactly at the target at exactly 350ms.
 
 ## Color animation
 
-Animate `backgroundColor` and `color` between any hex or `rgb()` value. Each click cycles through colors.
+Animate `backgroundColor` and `color` between hex or `rgb()` / `rgba()` values.
 
 <ColorDemo />
 
-Color animation uses easing mode. Colors always stay valid — no clamping needed on your end.
-
 ```ts
-animate(el, { backgroundColor: '#3b82f6' }, { duration: 0.25, ease: 'easeOut' })
-animate(el, { color: 'rgb(255, 255, 255)' }, { duration: 0.3, ease: 'easeOut' })
+animate(el, { backgroundColor: '#3b82f6' }, { duration: 0.3, ease: 'easeOutCubic' })
+animate(el, { color: 'rgb(255, 255, 255)' }, { duration: 0.3, ease: 'easeOutCubic' })
 ```
 
 ## Easing names
 
-```ts
-'linear'
-'easeIn'   | 'easeOut'   | 'easeInOut'
-'easeInBack' | 'easeOutBack'
-'easeInElastic' | 'easeOutElastic'
+tweens includes Emil Kowalski's full easing palette plus CSS equivalents.
 
-// Or a custom function:
+**ease-out** — use for anything entering or exiting the screen (most common):
+
+```ts
+'easeOutQuad'   // weak
+'easeOutCubic'  // default — good for most UI
+'easeOutQuart'
+'easeOutQuint'
+'easeOutExpo'   // strong — feels fast and decisive
+'easeOutCirc'
+```
+
+**ease-in-out** — use for elements already on screen that need to move:
+
+```ts
+'easeInOutQuad'
+'easeInOutCubic'
+'easeInOutQuart'
+'easeInOutQuint'
+'easeInOutExpo'
+'easeInOutCirc'
+```
+
+**Other:**
+
+```ts
+'ease'      // hover states and color transitions
+'linear'    // constant speed — marquees, progress indicators only
+'easeIn'    // avoid — slow start feels sluggish in UI
+'easeOut'   // CSS ease-out equivalent
+'easeInOut' // CSS ease-in-out equivalent
+```
+
+**Custom cubic-bezier** — pass a 4-value tuple directly:
+
+```ts
+animate(el, { x: 100 }, { duration: 0.4, ease: [0.19, 1, 0.22, 1] })
+```
+
+**Custom function:**
+
+```ts
 animate(el, { x: 100 }, { duration: 0.4, ease: (t) => t * t })
+```
+
+You can also import `cubicBezier` to build a reusable easing function:
+
+```ts
+import { cubicBezier } from '@tweens/tweens'
+
+const myEase = cubicBezier(0.19, 1, 0.22, 1)
+animate(el, { x: 100 }, { duration: 0.4, ease: myEase })
 ```
 
 ## Signature
@@ -64,12 +105,12 @@ animate(
 
 ## Shared options
 
-Both spring and easing modes support these:
+Both modes support these:
 
 ```ts
 animate(el, { x: 100 }, {
   duration: 0.4,
-  ease: 'easeOut',
+  ease: 'easeOutCubic',
   delay:      0.1,   // seconds before start
   repeat:     2,     // extra plays after first; -1 = infinite
   yoyo:       true,  // reverse on every other repeat

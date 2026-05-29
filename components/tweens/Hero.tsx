@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Check, Copy, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
-import { spring, enter, stop, cascade } from '@tweens/tweens'
+import { spring, enter, cascade } from '@tweens/tweens'
 
 const canHover = () =>
   typeof window !== 'undefined' &&
@@ -17,32 +17,11 @@ function AnimatedHeadline() {
   useEffect(() => {
     if (hasAnimated.current) return
     hasAnimated.current = true
-
     const els = wordsRef.current.filter(Boolean)
     if (els.length === 0) return
-
-    // Stagger entrance of each word
     els.forEach((el, i) => {
-      setTimeout(() => {
-        try {
-          enter(el, { y: 20, opacity: 0 }, 'snappy')
-        } catch {
-          // Fallback: just make visible
-          el.style.opacity = '1'
-          el.style.transform = 'none'
-        }
-      }, i * 80)
+      setTimeout(() => enter(el, { y: 20, opacity: 0 }, 'snappy'), i * 80)
     })
-
-    // Safety net: ensure text is visible after a short delay
-    setTimeout(() => {
-      els.forEach(el => {
-        if (getComputedStyle(el).opacity === '0') {
-          el.style.opacity = '1'
-          el.style.transform = 'none'
-        }
-      })
-    }, 600)
   }, [])
 
   const words = ['Physics-based', 'animation', 'for', 'the', 'web.']
@@ -65,7 +44,6 @@ function AnimatedHeadline() {
 // ─── Interactive Spring Demo ──────────────────────────────────────────────────
 
 function SpringDemo() {
-  const containerRef = useRef<HTMLDivElement>(null)
   const cardRef = useRef<HTMLDivElement>(null)
   const dotRefs = useRef<HTMLDivElement[]>([])
   const [isHovered, setIsHovered] = useState(false)
@@ -73,44 +51,14 @@ function SpringDemo() {
   useEffect(() => {
     const card = cardRef.current
     if (!card) return
-    try {
-      enter(card, { y: 30, opacity: 0, scale: 0.95 }, 'gentle')
-    } catch {
-      card.style.opacity = '1'
-      card.style.transform = 'none'
-    }
-    // Safety net
-    setTimeout(() => {
-      if (card && getComputedStyle(card).opacity === '0') {
-        card.style.opacity = '1'
-        card.style.transform = 'none'
-      }
-    }, 800)
-  }, [])
+    enter(card, { y: 30, opacity: 0, scale: 0.95 }, 'gentle')
 
-  useEffect(() => {
-    const dots = dotRefs.current.filter(Boolean)
-    if (dots.length === 0) return
-
-    // Stagger dots in after card enters
     const timer = setTimeout(() => {
-      try {
-        cascade(dots, { y: 0, opacity: 1 }, 'snappy', 0.05)
-      } catch {
-        dots.forEach(dot => { dot.style.opacity = '1' })
-      }
+      const dots = dotRefs.current.filter(Boolean)
+      if (dots.length > 0) cascade(dots, { y: 0, opacity: 1 }, 'snappy', 0.05)
     }, 400)
 
-    // Safety net
-    const fallback = setTimeout(() => {
-      dots.forEach(dot => {
-        if (getComputedStyle(dot).opacity === '0') {
-          dot.style.opacity = '1'
-        }
-      })
-    }, 1000)
-
-    return () => { clearTimeout(timer); clearTimeout(fallback) }
+    return () => clearTimeout(timer)
   }, [])
 
   const handleMouseEnter = () => {
@@ -118,16 +66,9 @@ function SpringDemo() {
     setIsHovered(true)
     const card = cardRef.current
     if (card) spring(card, { scale: 1.02, y: -4 }, 'snappy')
-
-    // Scatter dots outward
     dotRefs.current.filter(Boolean).forEach((dot, i) => {
       const angle = (i / 6) * Math.PI * 2
-      const distance = 8
-      spring(dot, {
-        x: Math.cos(angle) * distance,
-        y: Math.sin(angle) * distance,
-        scale: 1.2,
-      }, 'bouncy')
+      spring(dot, { x: Math.cos(angle) * 8, y: Math.sin(angle) * 8, scale: 1.2 }, 'bouncy')
     })
   }
 
@@ -136,8 +77,6 @@ function SpringDemo() {
     setIsHovered(false)
     const card = cardRef.current
     if (card) spring(card, { scale: 1, y: 0 }, 'snappy')
-
-    // Return dots
     dotRefs.current.filter(Boolean).forEach(dot => {
       spring(dot, { x: 0, y: 0, scale: 1 }, 'snappy')
     })
@@ -145,12 +84,10 @@ function SpringDemo() {
 
   return (
     <div
-      ref={containerRef}
       className="relative flex items-center justify-center w-full aspect-square max-w-[340px] sm:max-w-[380px] mx-auto lg:mx-0"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {/* Main interactive card */}
       <div
         ref={cardRef}
         className="relative flex items-center justify-center w-48 h-48 sm:w-56 sm:h-56 rounded-3xl border border-white/[0.08] bg-gradient-to-br from-white/[0.06] to-white/[0.02] opacity-0 cursor-pointer"
@@ -163,13 +100,11 @@ function SpringDemo() {
         </div>
       </div>
 
-      {/* Orbiting dots */}
       {Array.from({ length: 6 }).map((_, i) => {
         const angle = (i / 6) * Math.PI * 2
         const radius = 120
         const x = Math.cos(angle) * radius
         const y = Math.sin(angle) * radius
-
         return (
           <div
             key={i}
@@ -198,18 +133,14 @@ function InstallCommand() {
     const btn = btnRef.current
     const icon = iconRef.current
     if (!btn) return
-
     spring(btn, { scale: 0.96 }, 'stiff')
     setTimeout(() => spring(btn, { scale: 1 }, 'snappy'), 100)
-
     await navigator.clipboard.writeText(cmd)
     setCopied(true)
-
     if (icon) {
       spring(icon, { scale: 1.15, rotate: -8 }, 'bouncy')
       setTimeout(() => spring(icon, { scale: 1, rotate: 0 }, 'snappy'), 180)
     }
-
     setTimeout(() => setCopied(false), 1500)
   }
 
@@ -269,31 +200,12 @@ function FeaturePills() {
   useEffect(() => {
     const pills = pillRefs.current.filter(Boolean)
     if (pills.length === 0) return
-
     const timer = setTimeout(() => {
       pills.forEach((pill, i) => {
-        setTimeout(() => {
-          try {
-            enter(pill, { y: 8, opacity: 0 }, 'snappy')
-          } catch {
-            pill.style.opacity = '1'
-            pill.style.transform = 'none'
-          }
-        }, i * 60)
+        setTimeout(() => enter(pill, { y: 8, opacity: 0 }, 'snappy'), i * 60)
       })
     }, 300)
-
-    // Safety net
-    const fallback = setTimeout(() => {
-      pills.forEach(pill => {
-        if (getComputedStyle(pill).opacity === '0') {
-          pill.style.opacity = '1'
-          pill.style.transform = 'none'
-        }
-      })
-    }, 800)
-
-    return () => { clearTimeout(timer); clearTimeout(fallback) }
+    return () => clearTimeout(timer)
   }, [])
 
   const features = ['~2kb gzipped', 'Zero dependencies', 'Interruptible', 'TypeScript']
@@ -321,11 +233,10 @@ export function Hero() {
       <div className="w-full max-w-5xl mx-auto px-6 py-16 lg:py-0">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
-          {/* Left: Copy */}
           <div>
             <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-white/[0.08] bg-white/[0.04] mb-5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400/60" />
-              <span className="text-[11px] font-mono text-white/40">v0.1.0</span>
+              <span className="text-[11px] font-mono text-white/40">v0.3.0</span>
             </div>
 
             <AnimatedHeadline />
@@ -342,7 +253,6 @@ export function Hero() {
             <FeaturePills />
           </div>
 
-          {/* Right: Interactive demo */}
           <div className="flex items-center justify-center lg:justify-end">
             <SpringDemo />
           </div>

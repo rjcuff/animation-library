@@ -1,23 +1,23 @@
 ---
 title: Welcome
-description: A spring animation engine for the DOM. Interruptible mid-flight, Promise-based, ~2kb gzipped, zero dependencies. Works with React, Vue, Svelte, or plain JavaScript.
+description: A spring animation engine for the DOM. Interruptible mid-flight, Promise-based, ~2kb gzipped, zero dependencies.
 ---
 
 ## What is tweens?
 
-tweens is a lightweight animation library that makes DOM elements move with **spring physics** — the same model used in iOS, Android, and Motion. Instead of picking an easing curve and a duration, you describe a spring: how stiff it is, how much it bounces. The element then physically settles to its target.
+tweens uses spring physics instead of fixed easing curves. You describe a spring — stiffness, damping, bounce — and the element settles to its target on its own schedule.
 
-The result is animation that feels responsive and alive rather than mechanical. Springs are also **interruptible** — if you start a new animation mid-way, the element continues from its current position and velocity with no snapping or jarring.
+Springs are **interruptible**: start a new animation mid-flight and the element picks up from wherever it is, carrying its velocity into the new direction. No snap, no timer to cancel.
+
+tweens also resolves a **Promise** when the spring settles, so you can sequence animations with `await` instead of nesting callbacks.
 
 ## Why not CSS transitions?
 
-CSS transitions have a fixed duration and easing curve. If you interrupt one mid-way (hover off before it finishes), the element snaps to a new starting point. Springs don't — they carry velocity through any interruption, which is what makes interactions feel fluid.
-
-tweens also gives you a **Promise** when the animation settles, so you can sequence animations with `await` without managing timers.
+CSS transitions have a fixed duration. If you interrupt one mid-way, the element snaps back to the start of the new transition. Springs don't — they carry velocity through any interruption, which is what makes hover states and drag gestures feel fluid.
 
 ## Why not GSAP or Motion?
 
-GSAP is powerful but large (~40 KB gzipped). Motion requires React and adds significant bundle weight for a relatively simple task. tweens is **~2 KB gzipped**, has zero dependencies, and works on any DOM element — React, Vue, Svelte, or plain HTML.
+GSAP is powerful but ~40 KB gzipped. Motion's vanilla package is lighter but still heavier than needed for most use cases. tweens is **~2 KB gzipped**, has zero dependencies, and works on any DOM element — React, Vue, Svelte, or plain HTML.
 
 ## Install
 
@@ -32,8 +32,8 @@ import { spring } from '@tweens/tweens'
 
 const card = document.getElementById('card')
 
-// Slide right with a bouncy spring
-spring(card, { x: 100 }, 'bouncy')
+// Slide right
+spring(card, { x: 100 }, 'snappy')
 
 // Fade in — returns a Promise
 await spring(card, { opacity: 1 }, 'gentle')
@@ -43,8 +43,8 @@ await spring(card, { y: -8 })
 await spring(card, { scale: 1.05 })
 ```
 
-All animation functions return `Promise<void>`. The promise resolves when the spring physically settles — no guessing at durations.
+All animation functions return `Promise<void>` that resolves when the spring physically settles.
 
 ## Browser support
 
-Any browser that supports `requestAnimationFrame` and `WeakMap` — effectively all modern browsers. Automatically respects `prefers-reduced-motion`.
+Any browser with `requestAnimationFrame` and `WeakMap` — all modern browsers. Automatically respects `prefers-reduced-motion`.

@@ -1,5 +1,5 @@
-import { HomeShowcase } from '@/components/tweens/HomeShowcase'
+import { redirect } from 'next/navigation'
 
 export default function HomePage() {
-  return <HomeShowcase />
+  redirect('/docs')
 }

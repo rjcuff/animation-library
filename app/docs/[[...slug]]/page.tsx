@@ -34,22 +34,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const page = source.getPage(slug)
   if (!page) notFound()
 
-  const title = `${page.data.title} — tweens`
+  // Use the bare page title here — the root layout template adds "— tweens"
+  // Manually including "— tweens" here caused "Welcome — tweens — tweens" in the tab
+  const pageTitle = page.data.title
+  const fullTitle = `${page.data.title} — tweens`  // for OG/Twitter sharing cards
   const description = page.data.description
   const url = `https://tweens.dev/docs/${slug?.join('/') ?? ''}`
 
   return {
-    title,
+    title: pageTitle,
     description,
     openGraph: {
-      title,
+      title: fullTitle,
       description,
       url,
-      images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: title }],
+      images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: fullTitle }],
     },
     twitter: {
       card: 'summary_large_image',
-      title,
+      title: fullTitle,
       description,
       images: ['/opengraph-image'],
     },
